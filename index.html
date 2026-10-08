@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>RAK Editing Studio</title>
+
+<meta name="description" content="RAK Editing Studio - Premium video and photo editing services.">
+
+<style>
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+}
+
+html{
+  scroll-behavior:smooth;
+}
+
+body{
+  font-family:Arial, sans-serif;
+  background:#080808;
+  color:white;
+  line-height:1.6;
+}
+
+/* HERO */
+header{
+  min-height:92vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  padding:30px 18px;
+  background:
+  radial-gradient(circle at top,#3d2b05 0,#090909 48%,#050505 100%);
+}
+
+.hero{
+  max-width:720px;
+}
+
+.badge{
+  display:inline-block;
+  border:1px solid #d4af37;
+  color:#d4af37;
+  padding:7px 15px;
+  border-radius:30px;
+  font-size:13px;
+  letter-spacing:2px;
+  margin-bottom:20px;
+}
+
+h1{
+  font-size:clamp(48px,14vw,90px);
+  line-height:1;
+  color:#d4af37;
+  text-shadow:0 0 25px #7b5b08;
+  margin-bottom:10px;
+}
+
+.hero h2{
+  font-size:clamp(22px,6vw,34px);
+  margin-bottom:15px;
+}
+
+.hero p{
+  color:#cfcfcf;
+  max-width:600px;
+  margin:0 auto 28px;
+}
+
+.btn{
+  display:inline-block;
+  background:#d4af37;
+  color:#090909;
+  text-decoration:none;
+  font-weight:bold;
+  padding:13px 23px;
+  border-radius:30px;
+  margin:5px;
+  transition:.2s;
+}
+
+.btn:hover{
+  transform:translateY(-2px);
+  background:#f0cf58;
+}
+
+.btn.dark{
+  background:transparent;
+  color:#d4af37;
+  border:1px solid #d4af37;
+}
+
+/* SECTIONS */
+section{
+  padding:65px 18px;
+  max-width:1050px;
+  margin:auto;
+}
+
+.title{
+  text-align:center;
+  color:#d4af37;
+  font-size:32px;
+  margin-bottom:12px;
+}
+
+.subtitle{
+  text-align:center;
+  color:#aaa;
+  margin-bottom:35px;
+}
+
+/* SERVICES */
+.cards{
+  display:grid;
+  grid-template-columns:
+  repeat(auto-fit,minmax(220px,1fr));
+  gap:18px;
+}
+
+.card{
+  background:#111;
+  border:1px solid #3a2c0d;
+  border-radius:18px;
+  padding:26px;
+  text-align:center;
+  transition:.2s;
+}
+
+.card:hover{
+  transform:translateY(-4px);
+  border-color:#d4af37;
+}
+
+.card .icon{
+  font-size:40px;
+  margin-bottom:12px;
+}
+
+.card h3{
+  color:#d4af37;
+  margin-bottom:8px;
+}
+
+.card p{
+  color:#aaa;
+  font-size:14px;
+}
+
+/* ABOUT */
+.about{
+  background:#0e0e0e;
+  border-radius:22px;
+  border:1px solid #2e240d;
+  text-align:center;
+  padding:35px 20px;
+}
+
+/* CONTACT */
+.contact{
+  text-align:center;
+}
+
+/* FOOTER */
+footer{
+  text-align:center;
+  padding:25px 18px;
+  color:#777;
+  border-top:1px solid #211b0d;
+  font-size:13px;
+}
+
+.gold{
+  color:#d4af37;
+}
+
+/* MOBILE */
+@media(max-width:600px){
+
+  header{
+    min-height:88vh;
+  }
+
+  section{
+    padding:50px 15px;
+  }
+
+  .card{
+    padding:22px;
+  }
+
+  .btn{
+    padding:12px 20px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<!-- HERO SECTION -->
+<header>
+
+<div class="hero">
+
+<div class="badge">
+PREMIUM EDITING STUDIO
+</div>
+
+<h1>RAK</h1>
+
+<h2>Editing Studio</h2>
+
+<p>
+Professional video & photo editing with a premium royal touch
+for Instagram, YouTube and social media.
+</p>
+
+<a class="btn" href="#services">
+View Services
+</a>
+
+<a class="btn dark" href="#contact">
+Contact Me
+</a>
+
+</div>
+
+</header>
+
+
+<!-- SERVICES -->
+<section id="services">
+
+<h2 class="title">
+Our Services
+</h2>
+
+<p class="subtitle">
+Creative editing made for your content.
+</p>
+
+<div class="cards">
+
+<div class="card">
+
+<div class="icon">🎬</div>
+
+<h3>
+Video Editing
+</h3>
+
+<p>
+Reels, Shorts, status videos and cinematic edits.
+</p>
+
+</div>
+
+
+<div class="card">
+
+<div class="icon">🖼️</div>
+
+<h3>
+Photo Editing
+</h3>
+
+<p>
+Premium photo edits, posters, thumbnails and creative designs.
+</p>
+
+</div>
+
+
+<div class="card">
+
+<div class="icon">📱</div>
+
+<h3>
+Social Media
+</h3>
+
+<p>
+Instagram and YouTube content designed to stand out.
+</p>
+
+</div>
+
+</div>
+
+</section>
+
+
+<!-- ABOUT -->
+<section>
+
+<div class="about">
+
+<h2 class="title">
+About RAK Editing Studio
+</h2>
+
+<p class="subtitle">
+Turning ordinary content into premium-looking edits.
+</p>
+
+<p style="color:#bbb;max-width:700px;margin:auto">
+
+Welcome to RAK Editing Studio.
+I create stylish, modern and eye-catching edits
+for creators, brands and social media content.
+
+</p>
+
+</div>
+
+</section>
+
+
+<!-- CONTACT -->
+<section id="contact" class="contact">
+
+<h2 class="title">
+Let's Create Something Amazing
+</h2>
+
+<p class="subtitle">
+For editing work and enquiries, get in touch.
+</p>
+
+<a class="btn" href="#">
+DM / Contact
+</a>
+
+</section>
+
+
+<!-- FOOTER -->
+<footer>
+
+© 2026
+<span class="gold">
+RAK Editing Studio
+</span>
+• All Rights Reserved
+
+</footer>
+
+</body>
+  </html>
