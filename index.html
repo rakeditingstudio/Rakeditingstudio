@@ -2,354 +2,55 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>RAK Editing Studio</title>
-
-<meta name="description" content="RAK Editing Studio - Premium video and photo editing services.">
-
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#080808">
+<meta name="description" content="RAK Editing Studio — video editing tools, creator apps, videos, photos and AI prompts by Royal Aashish King.">
+<title>RAK Editing Studio | Royal Aashish King</title>
 <style>
-*{
-  margin:0;
-  padding:0;
-  box-sizing:border-box;
-}
-
-html{
-  scroll-behavior:smooth;
-}
-
-body{
-  font-family:Arial, sans-serif;
-  background:#080808;
-  color:white;
-  line-height:1.6;
-}
-
-/* HERO */
-header{
-  min-height:92vh;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  text-align:center;
-  padding:30px 18px;
-  background:
-  radial-gradient(circle at top,#3d2b05 0,#090909 48%,#050505 100%);
-}
-
-.hero{
-  max-width:720px;
-}
-
-.badge{
-  display:inline-block;
-  border:1px solid #d4af37;
-  color:#d4af37;
-  padding:7px 15px;
-  border-radius:30px;
-  font-size:13px;
-  letter-spacing:2px;
-  margin-bottom:20px;
-}
-
-h1{
-  font-size:clamp(48px,14vw,90px);
-  line-height:1;
-  color:#d4af37;
-  text-shadow:0 0 25px #7b5b08;
-  margin-bottom:10px;
-}
-
-.hero h2{
-  font-size:clamp(22px,6vw,34px);
-  margin-bottom:15px;
-}
-
-.hero p{
-  color:#cfcfcf;
-  max-width:600px;
-  margin:0 auto 28px;
-}
-
-.btn{
-  display:inline-block;
-  background:#d4af37;
-  color:#090909;
-  text-decoration:none;
-  font-weight:bold;
-  padding:13px 23px;
-  border-radius:30px;
-  margin:5px;
-  transition:.2s;
-}
-
-.btn:hover{
-  transform:translateY(-2px);
-  background:#f0cf58;
-}
-
-.btn.dark{
-  background:transparent;
-  color:#d4af37;
-  border:1px solid #d4af37;
-}
-
-/* SECTIONS */
-section{
-  padding:65px 18px;
-  max-width:1050px;
-  margin:auto;
-}
-
-.title{
-  text-align:center;
-  color:#d4af37;
-  font-size:32px;
-  margin-bottom:12px;
-}
-
-.subtitle{
-  text-align:center;
-  color:#aaa;
-  margin-bottom:35px;
-}
-
-/* SERVICES */
-.cards{
-  display:grid;
-  grid-template-columns:
-  repeat(auto-fit,minmax(220px,1fr));
-  gap:18px;
-}
-
-.card{
-  background:#111;
-  border:1px solid #3a2c0d;
-  border-radius:18px;
-  padding:26px;
-  text-align:center;
-  transition:.2s;
-}
-
-.card:hover{
-  transform:translateY(-4px);
-  border-color:#d4af37;
-}
-
-.card .icon{
-  font-size:40px;
-  margin-bottom:12px;
-}
-
-.card h3{
-  color:#d4af37;
-  margin-bottom:8px;
-}
-
-.card p{
-  color:#aaa;
-  font-size:14px;
-}
-
-/* ABOUT */
-.about{
-  background:#0e0e0e;
-  border-radius:22px;
-  border:1px solid #2e240d;
-  text-align:center;
-  padding:35px 20px;
-}
-
-/* CONTACT */
-.contact{
-  text-align:center;
-}
-
-/* FOOTER */
-footer{
-  text-align:center;
-  padding:25px 18px;
-  color:#777;
-  border-top:1px solid #211b0d;
-  font-size:13px;
-}
-
-.gold{
-  color:#d4af37;
-}
-
-/* MOBILE */
-@media(max-width:600px){
-
-  header{
-    min-height:88vh;
-  }
-
-  section{
-    padding:50px 15px;
-  }
-
-  .card{
-    padding:22px;
-  }
-
-  .btn{
-    padding:12px 20px;
-  }
-}
+:root{--bg:#080808;--panel:#121212;--gold:#f3bd54;--muted:#b9b9b9;--line:#292929}
+*{box-sizing:border-box}html{scroll-behavior:smooth;scroll-padding-top:82px}body{margin:0;background:var(--bg);color:#f7f7f7;font:16px/1.6 Arial,sans-serif}a{color:inherit}button,input,textarea,select{font:inherit}button,.btn{border:1px solid #4d3a19;background:linear-gradient(135deg,#f3bd54,#c68b2c);color:#17110a;padding:11px 16px;border-radius:10px;font-weight:700;cursor:pointer;text-decoration:none;display:inline-block}button.secondary,.btn.secondary{background:#191919;color:#f7f7f7;border-color:#383838}button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible{outline:2px solid var(--gold);outline-offset:3px}.wrap{width:min(1120px,92%);margin:auto}.top{position:sticky;top:0;z-index:10;background:#080808ed;backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}.nav{min-height:68px;display:flex;align-items:center;justify-content:space-between;gap:14px}.brand{font-weight:900;letter-spacing:.4px}.brand span,.gold{color:var(--gold)}nav{display:flex;gap:15px;flex-wrap:wrap}nav a{text-decoration:none;color:#ddd;font-size:14px}nav a:hover{color:var(--gold)}.hero{padding:78px 0 64px;background:radial-gradient(ellipse at 80% 10%,#6b461d55,transparent 42%),linear-gradient(180deg,#0e0d0b,#080808)}.eyebrow{color:var(--gold);text-transform:uppercase;letter-spacing:3px;font-size:12px;font-weight:bold}.hero h1{font-size:clamp(38px,8vw,76px);line-height:1.04;margin:12px 0 18px;max-width:800px}.hero p,.intro{color:var(--muted);max-width:680px}.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:24px}.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:40px;max-width:650px}.stat,.card,.adminbox{background:linear-gradient(145deg,#171717,#0e0e0e);border:1px solid var(--line);border-radius:16px;padding:18px}.stat strong{display:block;color:var(--gold);font-size:20px}.stat small{color:var(--muted)}section{padding:54px 0}.section-head{display:flex;align-items:end;justify-content:space-between;gap:20px;margin-bottom:22px}.section-head h2{font-size:clamp(26px,4vw,38px);margin:4px 0}.section-head p{margin:0;color:var(--muted)}.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}.card h3{margin:8px 0}.card p{color:var(--muted);margin:5px 0 14px}.tag{display:inline-block;font-size:11px;letter-spacing:1px;color:var(--gold);border:1px solid #614a25;padding:3px 8px;border-radius:20px}.card-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.thumb{width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:10px;background:#202020}.empty{border:1px dashed #444;padding:24px;border-radius:14px;color:var(--muted);text-align:center;grid-column:1/-1}.prompt-text{white-space:pre-wrap;overflow-wrap:anywhere;background:#090909;border:1px solid #292929;border-radius:10px;padding:12px;color:#eee;font-size:14px}.filters{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:15px}.filters input{flex:1;min-width:180px}.field{width:100%;padding:11px 12px;background:#090909;border:1px solid #383838;border-radius:9px;color:#fff;margin:5px 0 12px}.adminbox{max-width:760px}.adminbox label{font-size:13px;color:#ddd}.formgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px}.hidden{display:none!important}.note{font-size:12px;color:var(--muted)}footer{border-top:1px solid var(--line);padding:28px 0;color:var(--muted);font-size:13px}.footerrow{display:flex;justify-content:space-between;gap:15px;flex-wrap:wrap}.danger{background:#3b1717;color:#ffdede;border-color:#6c2d2d}.notice{border:1px solid #55421f;background:#21190d;color:#f4dba7;padding:12px;border-radius:10px;font-size:13px;margin:12px 0}
+@media(max-width:760px){.nav{align-items:flex-start;padding:13px 0;flex-direction:column}nav{gap:10px}.grid{grid-template-columns:1fr}.stats{grid-template-columns:1fr 1fr}.section-head{align-items:flex-start;flex-direction:column}.formgrid{grid-template-columns:1fr}.hero{padding-top:52px}}
 </style>
 </head>
-
 <body>
-
-<!-- HERO SECTION -->
-<header>
-
-<div class="hero">
-
-<div class="badge">
-PREMIUM EDITING STUDIO
-</div>
-
-<h1>RAK</h1>
-
-<h2>Editing Studio</h2>
-
-<p>
-Professional video & photo editing with a premium royal touch
-for Instagram, YouTube and social media.
-</p>
-
-<a class="btn" href="#services">
-View Services
-</a>
-
-<a class="btn dark" href="#contact">
-Contact Me
-</a>
-
-</div>
-
-</header>
-
-
-<!-- SERVICES -->
-<section id="services">
-
-<h2 class="title">
-Our Services
-</h2>
-
-<p class="subtitle">
-Creative editing made for your content.
-</p>
-
-<div class="cards">
-
-<div class="card">
-
-<div class="icon">🎬</div>
-
-<h3>
-Video Editing
-</h3>
-
-<p>
-Reels, Shorts, status videos and cinematic edits.
-</p>
-
-</div>
-
-
-<div class="card">
-
-<div class="icon">🖼️</div>
-
-<h3>
-Photo Editing
-</h3>
-
-<p>
-Premium photo edits, posters, thumbnails and creative designs.
-</p>
-
-</div>
-
-
-<div class="card">
-
-<div class="icon">📱</div>
-
-<h3>
-Social Media
-</h3>
-
-<p>
-Instagram and YouTube content designed to stand out.
-</p>
-
-</div>
-
-</div>
-
-</section>
-
-
-<!-- ABOUT -->
-<section>
-
-<div class="about">
-
-<h2 class="title">
-About RAK Editing Studio
-</h2>
-
-<p class="subtitle">
-Turning ordinary content into premium-looking edits.
-</p>
-
-<p style="color:#bbb;max-width:700px;margin:auto">
-
-Welcome to RAK Editing Studio.
-I create stylish, modern and eye-catching edits
-for creators, brands and social media content.
-
-</p>
-
-</div>
-
-</section>
-
-
-<!-- CONTACT -->
-<section id="contact" class="contact">
-
-<h2 class="title">
-Let's Create Something Amazing
-</h2>
-
-<p class="subtitle">
-For editing work and enquiries, get in touch.
-</p>
-
-<a class="btn" href="#">
-DM / Contact
-</a>
-
-</section>
-
-
-<!-- FOOTER -->
-<footer>
-
-© 2026
-<span class="gold">
-RAK Editing Studio
-</span>
-• All Rights Reserved
-
-</footer>
-
+<div class="top"><div class="wrap nav"><a class="brand" href="#home" style="text-decoration:none">RAK <span>EDITING STUDIO</span></a><nav aria-label="Main navigation"><a href="#tools">Tools & Apps</a><a href="#videos">Videos</a><a href="#photos">Photos</a><a href="#prompts">AI Prompts</a><a href="#admin">Admin</a></nav></div></div>
+<main>
+<header class="hero" id="home"><div class="wrap"><div class="eyebrow">Create • Edit • Inspire</div><h1>Make Your Content<br><span class="gold">Stand Out.</span></h1><p>Welcome to RAK Editing Studio by Royal Aashish King — your creator hub for editing apps, video showcases, photos and ready-to-copy AI prompts.</p><div class="actions"><a class="btn" href="#tools">Explore Editing Tools</a><a class="btn secondary" href="#prompts">Browse AI Prompts</a></div><div class="stats"><div class="stat"><strong>Creator Tools</strong><small>Useful editing resources</small></div><div class="stat"><strong>Media Gallery</strong><small>Videos & photos</small></div><div class="stat"><strong>AI Prompts</strong><small>Copy and create</small></div></div></div></header>
+<section id="tools"><div class="wrap"><div class="section-head"><div><div class="eyebrow">Creator resources</div><h2>Editing Tools & Apps</h2><p>Open official websites or add your own trusted links from the admin area.</p></div></div><div class="grid" id="toolsGrid"></div></div></section>
+<section id="videos"><div class="wrap"><div class="section-head"><div><div class="eyebrow">Watch & get inspired</div><h2>Video Showcase</h2><p>Add a YouTube link or a direct video URL from the admin panel.</p></div></div><div class="grid" id="videosGrid"></div></div></section>
+<section id="photos"><div class="wrap"><div class="section-head"><div><div class="eyebrow">Visual portfolio</div><h2>Photo Gallery</h2><p>Your posters, edits, thumbnails and creative experiments.</p></div></div><div class="grid" id="photosGrid"></div></div></section>
+<section id="prompts"><div class="wrap"><div class="section-head"><div><div class="eyebrow">Create with AI</div><h2>AI Prompt Library</h2><p>Copy a prompt and use it in your preferred AI tool.</p></div></div><div class="filters"><input class="field" id="promptSearch" placeholder="Search prompts…" aria-label="Search prompts"></div><div class="grid" id="promptsGrid"></div></div></section>
+<section id="admin"><div class="wrap"><div class="section-head"><div><div class="eyebrow">Studio controls</div><h2>Admin Panel</h2><p>Manage the content shown on this browser.</p></div></div><div class="adminbox"><div class="notice"><strong>Important:</strong> This starter admin saves content only in this browser using local storage. It is not a secure private admin system and posts will not automatically sync to visitors or other devices. A real public admin panel needs authenticated backend storage.</div><div id="loginArea"><label for="adminPin">Demo admin PIN</label><input class="field" id="adminPin" type="password" inputmode="numeric" placeholder="Enter 2468"><button id="loginBtn">Unlock demo panel</button><p class="note">Demo PIN is visible in this starter code; do not use this for private or sensitive content.</p></div><div id="adminArea" class="hidden"><h3>Add a resource or post</h3><form id="contentForm"><div class="formgrid"><div><label for="itemType">Content type</label><select class="field" id="itemType"><option value="tool">Editing app / tool</option><option value="video">Video</option><option value="photo">Photo / poster</option><option value="prompt">AI prompt</option></select></div><div><label for="itemTitle">Title</label><input class="field" id="itemTitle" required maxlength="100" placeholder="e.g. Cinematic portrait prompt"></div></div><label for="itemDesc">Short description</label><input class="field" id="itemDesc" maxlength="220" placeholder="What is it about?"><label for="itemUrl">Link (app website, video URL or image URL)</label><input class="field" id="itemUrl" type="url" placeholder="https://…"><label for="itemBody">Prompt text (for AI prompts)</label><textarea class="field" id="itemBody" rows="4" placeholder="Write or paste your prompt here"></textarea><label for="itemFile">Or choose an image from this device (photo/poster)</label><input class="field" id="itemFile" type="file" accept="image/*"><p class="note">Keep image files small. Browser storage is limited; use image URLs for larger media.</p><button type="submit">Add to this browser</button> <button type="button" id="logoutBtn" class="secondary">Lock panel</button></form><h3 style="margin-top:24px">Your saved items</h3><div id="manageList"></div><button id="clearBtn" class="danger" style="margin-top:12px">Delete all locally saved items</button></div></div></div></section>
+</main>
+<footer><div class="wrap footerrow"><span>© <span id="year"></span> RAK Editing Studio · Royal Aashish King</span><span>Built for creators, with a royal touch.</span></div></footer>
+<script>
+const KEY='rakStudioContentV1';
+const seed=[
+{id:'seed-tool-capcut',type:'tool',title:'CapCut',desc:'Video editor for mobile and desktop. Check the official availability in your region.',url:'https://www.capcut.com/',body:''},
+{id:'seed-tool-vn',type:'tool',title:'VN Video Editor',desc:'A video editing app for creators.',url:'https://www.vlognow.me/',body:''},
+{id:'seed-tool-canva',type:'tool',title:'Canva',desc:'Design posters, thumbnails and social posts.',url:'https://www.canva.com/',body:''},
+{id:'seed-prompt-cinematic',type:'prompt',title:'Cinematic Portrait Starter',desc:'A starting point for a dramatic portrait image.',url:'',body:'Create a cinematic, realistic portrait with natural skin texture, dramatic but believable lighting, a clean background, sharp subject focus, balanced contrast, professional color grading, and high detail. Preserve the reference person’s identity and clothing when a reference image is provided.'},
+{id:'seed-prompt-logo',type:'prompt',title:'Premium Logo Reveal',desc:'A premium animation concept for your logo.',url:'',body:'Create a premium 3D logo reveal on a dark studio background. Use controlled gold and cool-blue light, subtle particles, realistic reflections, a short cinematic camera move, and a clean final hold. Keep the supplied logo artwork and lettering unchanged; do not invent or replace any letters.'}
+];
+function loadItems(){try{const v=JSON.parse(localStorage.getItem(KEY)||'[]');return Array.isArray(v)?v:[]}catch(e){return []}}
+let items=loadItems();let unlocked=false;
+const el=id=>document.getElementById(id);
+function safeUrl(s){try{const u=new URL(s);return ['http:','https:'].includes(u.protocol)?u.href:''}catch(e){return ''}}
+function esc(s=''){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function allItems(){return [...seed,...items]}
+function mediaHtml(x){const u=safeUrl(x.imageData||x.url||'');if(x.type==='photo'&&u)return '<img class="thumb" loading="lazy" src="'+esc(u)+'" alt="'+esc(x.title)+'">';if(x.type==='video'&&u&&(/youtube\.com|youtu\.be/.test(u)))return '<a href="'+esc(u)+'" target="_blank" rel="noopener"><div class="thumb" style="display:grid;place-items:center;font-size:38px">▶</div></a>';if(x.type==='video'&&u)return '<video class="thumb" controls preload="metadata" src="'+esc(u)+'"></video>';return ''}
+function card(x){let actions='';const u=safeUrl(x.url);if(u)actions+='<a class="btn secondary" href="'+esc(u)+'" target="_blank" rel="noopener">Open link ↗</a>';if(x.type==='prompt')actions+='<button type="button" data-copy="'+esc(x.id)+'">Copy prompt</button>';return '<article class="card">'+mediaHtml(x)+'<span class="tag">'+esc(x.type.toUpperCase())+'</span><h3>'+esc(x.title)+'</h3><p>'+esc(x.desc||'')+'</p>'+(x.type==='prompt'?'<div class="prompt-text">'+esc(x.body||'Add prompt text in Admin Panel.')+'</div>':'')+'<div class="card-actions">'+actions+'</div></article>'}
+function renderGrid(id,type,filter=''){const arr=allItems().filter(x=>x.type===type&&((x.title+' '+(x.desc||'')+' '+(x.body||'')).toLowerCase().includes(filter.toLowerCase())));el(id).innerHTML=arr.length?arr.map(card).join(''):'<div class="empty">Nothing here yet. Add content in the Admin Panel.</div>'}
+function render(){renderGrid('toolsGrid','tool');renderGrid('videosGrid','video');renderGrid('photosGrid','photo');renderGrid('promptsGrid','prompt',el('promptSearch').value);renderManage()}
+function persist(){try{localStorage.setItem(KEY,JSON.stringify(items));render();return true}catch(e){alert('Browser storage is full. Try a smaller image or use an image URL.');return false}}
+function renderManage(){if(!unlocked)return;el('manageList').innerHTML=items.length?items.map(x=>'<div class="card" style="margin:8px 0;padding:12px"><strong>'+esc(x.title)+'</strong> <span class="tag">'+esc(x.type)+'</span><button class="danger" style="float:right;padding:6px 9px" data-delete="'+esc(x.id)+'">Delete</button><div class="note">'+esc(x.desc||'')+'</div></div>').join(''):'<p class="note">No custom items yet.</p>'}
+document.addEventListener('click',async e=>{const c=e.target.closest('[data-copy]');if(c){const x=allItems().find(i=>i.id===c.dataset.copy);if(!x)return;try{await navigator.clipboard.writeText(x.body||'');c.textContent='Copied!';setTimeout(()=>c.textContent='Copy prompt',1200)}catch(err){const t=document.createElement('textarea');t.value=x.body||'';document.body.appendChild(t);t.select();document.execCommand('copy');t.remove();c.textContent='Copied!'}}const d=e.target.closest('[data-delete]');if(d&&unlocked&&confirm('Delete this item from this browser?')){items=items.filter(x=>x.id!==d.dataset.delete);persist()}});
+el('promptSearch').addEventListener('input',()=>renderGrid('promptsGrid','prompt',el('promptSearch').value));
+el('loginBtn').addEventListener('click',()=>{if(el('adminPin').value==='2468'){unlocked=true;el('loginArea').classList.add('hidden');el('adminArea').classList.remove('hidden');renderManage()}else alert('Incorrect demo PIN. Try 2468 for this starter version.')});
+el('logoutBtn').addEventListener('click',()=>{unlocked=false;el('adminArea').classList.add('hidden');el('loginArea').classList.remove('hidden');el('adminPin').value=''});
+el('contentForm').addEventListener('submit',async e=>{e.preventDefault();if(!unlocked)return;const type=el('itemType').value,title=el('itemTitle').value.trim(),desc=el('itemDesc').value.trim(),url=safeUrl(el('itemUrl').value.trim()),body=el('itemBody').value.trim(),file=el('itemFile').files[0];if(!title){alert('Please add a title.');return}if(el('itemUrl').value.trim()&&!url){alert('Use a valid http or https link.');return}let imageData='';if(file){if(!file.type.startsWith('image/')){alert('Choose an image file.');return}if(file.size>700000){alert('Image is too large for this demo. Use an image under 700 KB or add an image URL.');return}imageData=await new Promise((resolve,reject)=>{const reader=new FileReader();reader.onload=()=>resolve(reader.result);reader.onerror=reject;reader.readAsDataURL(file)})}if(type==='prompt'&&!body){alert('Please add the prompt text.');return}items.unshift({id:'item-'+Date.now(),type,title,desc,url,body,imageData});if(persist()){el('contentForm').reset();alert('Added in this browser. It is not published to all visitors.')}});
+el('clearBtn').addEventListener('click',()=>{if(unlocked&&confirm('Delete all custom items saved in this browser?')){items=[];persist()}});
+el('year').textContent=new Date().getFullYear();render();
+</script>
 </body>
-  </html>
+</html>
