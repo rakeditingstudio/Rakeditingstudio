@@ -3,9 +3,8 @@ const MODEL = "gemini-2.5-flash";
 
 export default {
   async fetch(request, env) {
-    const origin = request.headers.get("Origin") || "";
     const cors = {
-      "Access-Control-Allow-Origin": origin === ALLOWED_ORIGIN ? ALLOWED_ORIGIN : ALLOWED_ORIGIN,
+      "Access-Control-Allow-Origin": ALLOWED_ORIGIN,
       "Access-Control-Allow-Methods": "POST, OPTIONS",
       "Access-Control-Allow-Headers": "Content-Type",
       "Vary": "Origin"
@@ -47,12 +46,18 @@ export default {
       });
       const result = await upstream.json();
       if (!upstream.ok) {
+        const detail = result?.error?.message || "No error detail returned by Gemini.";
+        console.error("Gemini API error", upstream.status, detail);
         return json({ error: "The AI service could not answer right now. Please try again later." }, 502);
       }
       const reply = (result.candidates || []).flatMap(c => c.content?.parts || []).map(p => p.text || "").join("\n").trim();
-      if (!reply) return json({ error: "No answer returned. Please try a different question." }, 502);
+      if (!reply) {
+        console.error("Gemini returned no text reply.");
+        return json({ error: "No answer returned. Please try a different question." }, 502);
+      }
       return json({ reply });
     } catch (error) {
+      console.error("RAKGPT request processing error", error?.message || "Unknown error");
       return json({ error: "Unable to process this request. Please try again." }, 400);
     }
   }
