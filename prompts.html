@@ -1,103 +1,91 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#080808">
-  <meta name="description" content="Trending AI video prompts by RAK Editing Studio. Copy prompts and create cinematic AI videos.">
-  <title>RAK Editing Studio - Viral Prompts</title>
-  <style>
-    *{box-sizing:border-box}
-    body{margin:0;background:#080808;color:#fff;font-family:Arial,sans-serif}
-    header{padding:28px 15px;text-align:center;background:linear-gradient(90deg,#ff0050,#ff8a00)}
-    header h1{margin:0;font-size:clamp(24px,5vw,38px);letter-spacing:1px}
-    header p{margin-bottom:0}
-    .intro{text-align:center;padding:12px;color:#bbb}
-    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr));gap:20px;padding:20px;max-width:1200px;margin:auto}
-    .card{background:#141414;border:1px solid #333;border-radius:16px;overflow:hidden;transition:transform .2s,border-color .2s}
-    .card:hover{transform:translateY(-4px);border-color:#ff0050}
-    .poster{height:340px;position:relative;background:#222}
-    .poster img{width:100%;height:100%;object-fit:cover;display:block}
-    .badge{position:absolute;top:10px;left:10px;background:#ff0050;padding:6px 10px;border-radius:20px;font-size:12px;font-weight:bold}
-    .card-body{padding:15px}
-    .card-body h3{margin-top:0}
-    .prompt{background:#0d0d0d;border:1px dashed #444;padding:12px;border-radius:10px;font-size:13px;line-height:1.6;color:#ccc;min-height:100px;max-height:180px;overflow:auto;white-space:pre-wrap;overflow-wrap:anywhere}
-    .btn{width:100%;margin-top:10px;padding:12px;background:#ff0050;color:#fff;border:none;border-radius:10px;font-weight:bold;font-size:14px;cursor:pointer}
-    .btn:hover{background:#e60048}
-    .btn:focus-visible{outline:2px solid white;outline-offset:3px}
-    footer{text-align:center;padding:25px 15px;color:#aaa;border-top:1px solid #292929;line-height:1.8}
-    footer strong{color:#ff8a00}
-    .back{display:inline-block;margin:0 auto 12px;padding:10px 16px;border:1px solid #444;border-radius:10px;text-decoration:none;color:#fff}
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#080808">
+<meta name="description" content="Premium cinematic AI video prompts with poster previews by RAK Editing Studio. Copy prompts for your next AI reel.">
+<title>Viral AI Video Prompts | RAK Editing Studio</title>
+<style>
+:root{--gold:#f4c76b;--gold2:#ffdf98;--bg:#080808;--panel:#121212;--muted:#b8b8b8}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:radial-gradient(ellipse at top,#21190b 0,#080808 48%);color:#fff;font-family:Arial,Helvetica,sans-serif}
+a{color:inherit}
+.topbar{padding:14px 5%;display:flex;align-items:center;justify-content:space-between;gap:12px;border-bottom:1px solid #ffffff16;background:#090909d9}
+.brand{font-weight:900;letter-spacing:1.3px;color:var(--gold2)}
+.navlink{border:1px solid #705827;border-radius:30px;padding:9px 14px;text-decoration:none;font-size:13px}
+.hero{max-width:1100px;margin:auto;padding:42px 18px 24px;text-align:center}
+.eyebrow{color:var(--gold);letter-spacing:3px;font-size:11px;font-weight:800}
+h1{font-size:clamp(30px,6vw,58px);line-height:1.04;margin:14px 0;background:linear-gradient(100deg,#fff5d8,#e7b64f,#fff);-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero p{max-width:650px;margin:0 auto;color:#c8c2b6;line-height:1.7}
+.hero-poster{max-width:900px;margin:26px auto 0;position:relative;border:1px solid #9b7738;border-radius:22px;overflow:hidden;min-height:230px;background:#16110a}
+.hero-poster img{width:100%;height:clamp(230px,42vw,390px);object-fit:cover;display:block;opacity:.76}
+.hero-overlay{position:absolute;inset:0;background:linear-gradient(90deg,#050505d9,#05050555 60%,transparent);display:flex;flex-direction:column;justify-content:center;align-items:flex-start;text-align:left;padding:clamp(20px,5vw,52px)}
+.hero-overlay strong{font-size:clamp(22px,4vw,42px);max-width:460px;line-height:1.12}
+.hero-overlay span{color:var(--gold2);font-size:12px;letter-spacing:2px;margin-bottom:10px}
+.hero-overlay p{margin:12px 0 0;color:#eee;font-size:13px}
+.section-title{text-align:center;padding:16px 16px 0}
+.section-title h2{font-size:clamp(22px,4vw,32px);margin-bottom:8px}
+.section-title p{color:var(--muted);font-size:14px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,290px),1fr));gap:20px;padding:20px;max-width:1250px;margin:0 auto 28px}
+.card{background:linear-gradient(150deg,#171717,#0e0e0e);border:1px solid #383027;border-radius:18px;overflow:hidden;transition:transform .2s,border-color .2s,box-shadow .2s}
+.card:hover{transform:translateY(-4px);border-color:#c89b45;box-shadow:0 12px 35px #0008}
+.poster{height:250px;position:relative;background:#201a10;overflow:hidden}
+.poster img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .4s}
+.card:hover .poster img{transform:scale(1.04)}
+.poster:after{content:"";position:absolute;inset:30% 0 0;background:linear-gradient(transparent,#0d0d0d)}
+.badge{position:absolute;z-index:1;top:12px;left:12px;background:#0a0908dd;color:var(--gold2);border:1px solid #b78b3d;padding:7px 10px;border-radius:20px;font-size:10px;font-weight:800;letter-spacing:1px}
+.duration{position:absolute;z-index:1;bottom:12px;right:12px;background:#050505cc;padding:6px 9px;border-radius:6px;font-size:11px}
+.card-body{padding:17px}
+.card-body h3{margin:0 0 8px;font-size:19px}
+.desc{font-size:13px;line-height:1.6;color:#bdb7ab;margin:0 0 12px}
+.prompt{background:#080808;border:1px solid #35302a;padding:12px;border-radius:11px;font-size:12px;line-height:1.65;color:#e0ddd6;max-height:165px;overflow:auto;white-space:pre-wrap;overflow-wrap:anywhere}
+.btn{width:100%;margin-top:11px;padding:13px;background:linear-gradient(100deg,#b9852f,#f6d47c);color:#171007;border:0;border-radius:10px;font-weight:900;font-size:14px;cursor:pointer}
+.btn:hover{filter:brightness(1.08)}
+.btn:focus-visible{outline:2px solid white;outline-offset:3px}
+.note{text-align:center;color:#a8a195;font-size:12px;line-height:1.7;padding:0 20px 28px}
+footer{text-align:center;padding:25px 15px;color:#aaa;border-top:1px solid #29251e;line-height:1.9;background:#080808}
+footer strong{color:var(--gold2)}
+.back{display:inline-block;margin:0 auto 12px;padding:10px 16px;border:1px solid #705827;border-radius:10px;text-decoration:none;color:#fff}
+@media(max-width:520px){.topbar{padding:12px 14px}.brand{font-size:12px}.navlink{font-size:11px;padding:8px 10px}.hero{padding-top:30px}.poster{height:225px}.grid{padding:14px;gap:15px}}
+</style>
 </head>
 <body>
-  <header>
-    <h1>RAK EDITING STUDIO</h1>
-    <p>🔥 Trending AI Video Prompts 2026</p>
-  </header>
-  <div class="intro">Choose a prompt, copy it, and create your next AI video!</div>
-  <main class="grid">
-    <article class="card">
-      <div class="poster"><span class="badge">TRENDING #1</span><img src="https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=600" alt="Cinematic portrait at golden hour" loading="lazy"></div>
-      <div class="card-body">
-        <h3>AI Girl Sunset Cinematic</h3>
-        <div class="prompt">Create an 8K cinematic vertical video, 9:16 ratio, featuring a girl in a mustard field at golden hour. Gentle wind moves her hair, warm sunlight, natural expressions, smooth slow-motion camera movement, cinematic color grading, realistic details, beautiful movie lighting, high quality.</div>
-        <button class="btn" type="button" onclick="copyPrompt(this)">Copy Prompt</button>
-      </div>
-    </article>
-    <article class="card">
-      <div class="poster"><span class="badge">INDIA VIRAL</span><img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=600" alt="Portrait for an animated video concept" loading="lazy"></div>
-      <div class="card-body">
-        <h3>Motu Patlu - Madhepura Street</h3>
-        <div class="prompt">Create an original 3D animated comedy scene featuring two funny cartoon friends on a busy Indian street in Madhepura. Add colorful chai shops, auto-rickshaws, local market details, and a signboard reading "Madhepura City". Include funny Hindi dialogue, expressive cartoon animation, lively camera movement, vertical 9:16 format, 8 seconds.</div>
-        <button class="btn" type="button" onclick="copyPrompt(this)">Copy Prompt</button>
-      </div>
-    </article>
-    <article class="card">
-      <div class="poster"><span class="badge">CINEMATIC</span><img src="https://images.unsplash.com/photo-1500530855697-b586d89ee3ee?w=600" alt="Sunset landscape" loading="lazy"></div>
-      <div class="card-body">
-        <h3>Royal Sunset Travel Reel</h3>
-        <div class="prompt">Create a premium cinematic travel reel showing a stylish young traveler walking through a beautiful landscape at sunset. Golden light, dramatic clouds, smooth tracking shot, realistic scenery, subtle lens flare, detailed textures, professional color grading, 4K look, vertical 9:16 composition, 8 seconds.</div>
-        <button class="btn" type="button" onclick="copyPrompt(this)">Copy Prompt</button>
-      </div>
-    </article>
-    <article class="card">
-      <div class="poster"><span class="badge">ROYAL LOOK</span><img src="https://images.unsplash.com/photo-1519608487953-e999c86e7455?w=600" alt="Dramatic night sky" loading="lazy"></div>
-      <div class="card-body">
-        <h3>Royal Black &amp; Gold Intro</h3>
-        <div class="prompt">Create a premium royal brand intro with a black background, floating golden particles, cinematic smoke, dramatic golden light rays, metallic 3D typography, a crown-inspired emblem, and a smooth camera reveal. Luxury black-and-gold color palette, realistic reflections, high contrast, 4K style, vertical 9:16 format, 8 seconds. Add your own logo in the final frame and keep its artwork unchanged.</div>
-        <button class="btn" type="button" onclick="copyPrompt(this)">Copy Prompt</button>
-      </div>
-    </article>
-  </main>
-  <footer>
-    <a class="back" href="./">← Back to RAK Editing Studio</a><br>
-    <strong>RAK Editing Studio</strong><br>
-    Created by Royal Aashish King<br>
-    © <span id="year"></span> RAK Editing Studio. All rights reserved.
-  </footer>
-  <script>
-    async function copyPrompt(button){
-      const prompt=button.parentElement.querySelector(".prompt");
-      const originalText=button.textContent;
-      try{
-        await navigator.clipboard.writeText(prompt.innerText);
-      }catch(error){
-        const textArea=document.createElement("textarea");
-        textArea.value=prompt.innerText;
-        textArea.style.position="fixed";
-        textArea.style.left="-9999px";
-        document.body.appendChild(textArea);
-        textArea.select();
-        const copied=document.execCommand("copy");
-        textArea.remove();
-        if(!copied){alert("Copy failed. Please select and copy the prompt manually.");return;}
-      }
-      button.textContent="✓ Copied!";
-      button.style.background="#16803c";
-      setTimeout(()=>{button.textContent=originalText;button.style.background="";},1800);
-    }
-    document.getElementById("year").textContent=new Date().getFullYear();
-  </script>
+<nav class="topbar"><div class="brand">✦ RAK EDITING STUDIO</div><a class="navlink" href="./">← Main Website</a></nav>
+<header class="hero">
+<div class="eyebrow">CREATOR PROMPT LIBRARY • 2026</div>
+<h1>Turn Your Ideas Into Cinematic AI Videos</h1>
+<p>Premium poster-inspired ideas and ready-to-copy prompts for Reels, Shorts and creative videos. Pick a concept, copy the prompt, then paste it into your AI video generator.</p>
+<div class="hero-poster">
+<img src="https://images.unsplash.com/photo-1519608487953-e999c86e7455?auto=format&fit=crop&w=1400&q=85" alt="Dramatic cinematic night sky poster" fetchpriority="high">
+<div class="hero-overlay"><span>RAK • CINEMATIC COLLECTION</span><strong>MAKE EVERY FRAME FEEL LIKE A MOVIE</strong><p>Royal visuals. Smooth motion. Your creative style.</p></div>
+</div>
+</header>
+<section class="section-title"><h2>Featured Video Prompts</h2><p>Choose a poster below and copy the full prompt in one tap.</p></section>
+<main class="grid">
+<article class="card"><div class="poster"><span class="badge">ROYAL INTRO</span><img src="https://images.unsplash.com/photo-1519608487953-e999c86e7455?auto=format&fit=crop&w=800&q=80" alt="Dark dramatic sky and golden mood" loading="lazy"><span class="duration">8–10 sec • 9:16</span></div><div class="card-body"><h3>Royal Black &amp; Gold Logo Reveal</h3><p class="desc">A luxury brand intro with gold particles, dramatic lighting and a powerful final reveal.</p><div class="prompt">Create a premium 9:16 vertical cinematic logo reveal, 8–10 seconds. Begin in deep black darkness. Golden dust particles slowly swirl through cinematic smoke. A warm gold light sweeps across the scene as a powerful shockwave of light expands outward. Reveal my uploaded logo exactly as provided: do not redraw, replace, crop, or alter its letters or shape. Add realistic metallic gold reflections, subtle sparks, dramatic shadows, smooth camera push-in, elegant black-and-gold color grading, crisp details, professional sound-design feel. End with the original logo centered and clearly visible. No extra text, no watermark, no logo distortion.</div><button class="btn" type="button" onclick="copyPrompt(this)">✦ Copy Full Prompt</button></div></article>
+<article class="card"><div class="poster"><span class="badge">CINEMATIC PORTRAIT</span><img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=800&q=80" alt="Cinematic portrait concept" loading="lazy"><span class="duration">8 sec • 9:16</span></div><div class="card-body"><h3>Golden-Hour Portrait Reel</h3><p class="desc">Warm sunset light, natural movement and a polished cinematic portrait.</p><div class="prompt">Create an 8-second photorealistic vertical 9:16 cinematic portrait video using my uploaded reference photo. Preserve the person's identity and facial features accurately; do not change the face. Golden-hour sunlight, gentle breeze moving hair and clothing naturally, soft background bokeh, realistic skin texture, subtle natural expression, slow smooth camera orbit, shallow depth of field, premium film color grading, balanced highlights, stable anatomy and hands. Keep the subject recognizable in every frame. No face morphing, no flicker, no extra fingers, no text, no watermark. High-detail cinematic quality.</div><button class="btn" type="button" onclick="copyPrompt(this)">✦ Copy Full Prompt</button></div></article>
+<article class="card"><div class="poster"><span class="badge">SUPERCAR FILM</span><img src="https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=800&q=80" alt="Luxury sports car cinematic shot" loading="lazy"><span class="duration">8 sec • 9:16</span></div><div class="card-body"><h3>Luxury Car Night Cinematic</h3><p class="desc">Glossy reflections, city lights and a smooth automotive tracking shot.</p><div class="prompt">Generate an 8-second vertical 9:16 luxury automotive commercial featuring an elegant premium sports car on a rain-polished city street at night. Start with a close-up of the headlight, then smoothly track along the bodywork as neon city lights reflect across the paint. Fine mist in the air, realistic wet-road reflections, controlled cinematic lens flare, low-angle camera movement, deep blacks, refined gold highlights, photorealistic materials, smooth motion and consistent car design. Keep wheels and body geometry stable. No brand logos, no text, no watermark, no sudden cuts.</div><button class="btn" type="button" onclick="copyPrompt(this)">✦ Copy Full Prompt</button></div></article>
+<article class="card"><div class="poster"><span class="badge">TRAVEL REEL</span><img src="https://images.unsplash.com/photo-1500530855697-b586d89ee3ee?auto=format&fit=crop&w=800&q=80" alt="Epic scenic landscape at golden hour" loading="lazy"><span class="duration">8 sec • 9:16</span></div><div class="card-body"><h3>Epic Sunset Travel Reel</h3><p class="desc">A dreamy travel scene with sweeping scenery and smooth camera motion.</p><div class="prompt">Create an 8-second vertical 9:16 cinematic travel video of a lone traveler standing on a scenic ridge at sunset. Open with a wide landscape shot, then perform a smooth slow camera push forward. Golden sun rays pass through dramatic clouds, grass moves gently in the wind, atmospheric haze adds depth, natural colors, realistic terrain, subtle lens flare and premium travel-film grading. Maintain believable scale and stable scenery throughout. No fast jitter, no warped landscape, no text, no watermark. Compose the subject clearly for a mobile screen.</div><button class="btn" type="button" onclick="copyPrompt(this)">✦ Copy Full Prompt</button></div></article>
+<article class="card"><div class="poster"><span class="badge">FANTASY WORLD</span><img src="https://images.unsplash.com/photo-1470770841072-f978cf4d019e?auto=format&fit=crop&w=800&q=80" alt="Majestic mountains and lake" loading="lazy"><span class="duration">10 sec • 9:16</span></div><div class="card-body"><h3>Magical Floating Kingdom</h3><p class="desc">An original fantasy world reveal with mountains, clouds and glowing architecture.</p><div class="prompt">Create a 10-second original fantasy cinematic in vertical 9:16. A breathtaking floating kingdom emerges above enormous mist-covered mountains. Glowing waterfalls fall into the clouds, tiny golden lights shimmer across elegant ancient towers, birds glide in the distance, and morning sunlight breaks through the clouds. Begin with a wide establishing view, then move the camera forward smoothly to reveal intricate architecture. Epic scale, atmospheric depth, realistic cloud motion, beautiful gold-and-blue palette, consistent structures, polished VFX quality. No existing movie characters, no text, no watermark.</div><button class="btn" type="button" onclick="copyPrompt(this)">✦ Copy Full Prompt</button></div></article>
+<article class="card"><div class="poster"><span class="badge">3D ANIMATION</span><img src="https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&w=800&q=80" alt="Colorful retro gaming world" loading="lazy"><span class="duration">8 sec • 9:16</span></div><div class="card-body"><h3>Funny 3D Cartoon Street</h3><p class="desc">A colorful original animated comedy moment in a lively Indian market.</p><div class="prompt">Create an 8-second vertical 9:16 original 3D cartoon comedy scene in a lively Indian street market. Two original funny friends react to a runaway stack of colorful snack boxes, then exchange surprised expressions and laugh. Add chai stalls, an auto-rickshaw passing in the background, festive shop colors and lively but readable action. Expressive faces, appealing stylized 3D animation, smooth camera pan, warm daylight, detailed environment, consistent character designs and clean motion. Use original characters only; do not imitate existing copyrighted cartoon characters. No subtitles, no watermark, no distorted faces or limbs.</div><button class="btn" type="button" onclick="copyPrompt(this)">✦ Copy Full Prompt</button></div></article>
+</main>
+<div class="note">Tip: For best results, upload a clear reference image when your AI tool supports it. Video duration, aspect ratio and results depend on the AI tool you use.</div>
+<footer><a class="back" href="./">← Back to RAK Editing Studio</a><br><strong>RAK Editing Studio</strong><br>Created by Royal Aashish King<br>© <span id="year"></span> RAK Editing Studio. All rights reserved.</footer>
+<script>
+async function copyPrompt(button){
+ const prompt=button.parentElement.querySelector(".prompt").innerText;
+ const original=button.textContent;
+ try{await navigator.clipboard.writeText(prompt);}
+ catch(e){
+  const ta=document.createElement("textarea");ta.value=prompt;ta.style.position="fixed";ta.style.left="-9999px";document.body.appendChild(ta);ta.select();
+  const ok=document.execCommand("copy");ta.remove();if(!ok){alert("Copy failed. Please select and copy the prompt manually.");return;}
+ }
+ button.textContent="✓ Prompt Copied!";button.style.background="linear-gradient(100deg,#267a46,#49b978)";button.style.color="#fff";
+ setTimeout(()=>{button.textContent=original;button.style.background="";button.style.color="";},1800);
+}
+document.getElementById("year").textContent=new Date().getFullYear();
+</script>
 </body>
 </html>
