@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#080808">
+  <meta name="description" content="Trending AI video prompts by RAK Editing Studio. Copy prompts and create cinematic AI videos.">
+  <title>RAK Editing Studio - Viral Prompts</title>
+  <style>
+    *{box-sizing:border-box}
+    body{margin:0;background:#080808;color:#fff;font-family:Arial,sans-serif}
+    header{padding:28px 15px;text-align:center;background:linear-gradient(90deg,#ff0050,#ff8a00)}
+    header h1{margin:0;font-size:clamp(24px,5vw,38px);letter-spacing:1px}
+    header p{margin-bottom:0}
+    .intro{text-align:center;padding:12px;color:#bbb}
+    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr));gap:20px;padding:20px;max-width:1200px;margin:auto}
+    .card{background:#141414;border:1px solid #333;border-radius:16px;overflow:hidden;transition:transform .2s,border-color .2s}
+    .card:hover{transform:translateY(-4px);border-color:#ff0050}
+    .poster{height:340px;position:relative;background:#222}
+    .poster img{width:100%;height:100%;object-fit:cover;display:block}
+    .badge{position:absolute;top:10px;left:10px;background:#ff0050;padding:6px 10px;border-radius:20px;font-size:12px;font-weight:bold}
+    .card-body{padding:15px}
+    .card-body h3{margin-top:0}
+    .prompt{background:#0d0d0d;border:1px dashed #444;padding:12px;border-radius:10px;font-size:13px;line-height:1.6;color:#ccc;min-height:100px;max-height:180px;overflow:auto;white-space:pre-wrap;overflow-wrap:anywhere}
+    .btn{width:100%;margin-top:10px;padding:12px;background:#ff0050;color:#fff;border:none;border-radius:10px;font-weight:bold;font-size:14px;cursor:pointer}
+    .btn:hover{background:#e60048}
+    .btn:focus-visible{outline:2px solid white;outline-offset:3px}
+    footer{text-align:center;padding:25px 15px;color:#aaa;border-top:1px solid #292929;line-height:1.8}
+    footer strong{color:#ff8a00}
+    .back{display:inline-block;margin:0 auto 12px;padding:10px 16px;border:1px solid #444;border-radius:10px;text-decoration:none;color:#fff}
+  </style>
+</head>
+<body>
+  <header>
+    <h1>RAK EDITING STUDIO</h1>
+    <p>🔥 Trending AI Video Prompts 2026</p>
+  </header>
+  <div class="intro">Choose a prompt, copy it, and create your next AI video!</div>
+  <main class="grid">
+    <article class="card">
+      <div class="poster"><span class="badge">TRENDING #1</span><img src="https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=600" alt="Cinematic portrait at golden hour" loading="lazy"></div>
+      <div class="card-body">
+        <h3>AI Girl Sunset Cinematic</h3>
+        <div class="prompt">Create an 8K cinematic vertical video, 9:16 ratio, featuring a girl in a mustard field at golden hour. Gentle wind moves her hair, warm sunlight, natural expressions, smooth slow-motion camera movement, cinematic color grading, realistic details, beautiful movie lighting, high quality.</div>
+        <button class="btn" type="button" onclick="copyPrompt(this)">Copy Prompt</button>
+      </div>
+    </article>
+    <article class="card">
+      <div class="poster"><span class="badge">INDIA VIRAL</span><img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=600" alt="Portrait for an animated video concept" loading="lazy"></div>
+      <div class="card-body">
+        <h3>Motu Patlu - Madhepura Street</h3>
+        <div class="prompt">Create an original 3D animated comedy scene featuring two funny cartoon friends on a busy Indian street in Madhepura. Add colorful chai shops, auto-rickshaws, local market details, and a signboard reading "Madhepura City". Include funny Hindi dialogue, expressive cartoon animation, lively camera movement, vertical 9:16 format, 8 seconds.</div>
+        <button class="btn" type="button" onclick="copyPrompt(this)">Copy Prompt</button>
+      </div>
+    </article>
+    <article class="card">
+      <div class="poster"><span class="badge">CINEMATIC</span><img src="https://images.unsplash.com/photo-1500530855697-b586d89ee3ee?w=600" alt="Sunset landscape" loading="lazy"></div>
+      <div class="card-body">
+        <h3>Royal Sunset Travel Reel</h3>
+        <div class="prompt">Create a premium cinematic travel reel showing a stylish young traveler walking through a beautiful landscape at sunset. Golden light, dramatic clouds, smooth tracking shot, realistic scenery, subtle lens flare, detailed textures, professional color grading, 4K look, vertical 9:16 composition, 8 seconds.</div>
+        <button class="btn" type="button" onclick="copyPrompt(this)">Copy Prompt</button>
+      </div>
+    </article>
+    <article class="card">
+      <div class="poster"><span class="badge">ROYAL LOOK</span><img src="https://images.unsplash.com/photo-1519608487953-e999c86e7455?w=600" alt="Dramatic night sky" loading="lazy"></div>
+      <div class="card-body">
+        <h3>Royal Black &amp; Gold Intro</h3>
+        <div class="prompt">Create a premium royal brand intro with a black background, floating golden particles, cinematic smoke, dramatic golden light rays, metallic 3D typography, a crown-inspired emblem, and a smooth camera reveal. Luxury black-and-gold color palette, realistic reflections, high contrast, 4K style, vertical 9:16 format, 8 seconds. Add your own logo in the final frame and keep its artwork unchanged.</div>
+        <button class="btn" type="button" onclick="copyPrompt(this)">Copy Prompt</button>
+      </div>
+    </article>
+  </main>
+  <footer>
+    <a class="back" href="./">← Back to RAK Editing Studio</a><br>
+    <strong>RAK Editing Studio</strong><br>
+    Created by Royal Aashish King<br>
+    © <span id="year"></span> RAK Editing Studio. All rights reserved.
+  </footer>
+  <script>
+    async function copyPrompt(button){
+      const prompt=button.parentElement.querySelector(".prompt");
+      const originalText=button.textContent;
+      try{
+        await navigator.clipboard.writeText(prompt.innerText);
+      }catch(error){
+        const textArea=document.createElement("textarea");
+        textArea.value=prompt.innerText;
+        textArea.style.position="fixed";
+        textArea.style.left="-9999px";
+        document.body.appendChild(textArea);
+        textArea.select();
+        const copied=document.execCommand("copy");
+        textArea.remove();
+        if(!copied){alert("Copy failed. Please select and copy the prompt manually.");return;}
+      }
+      button.textContent="✓ Copied!";
+      button.style.background="#16803c";
+      setTimeout(()=>{button.textContent=originalText;button.style.background="";},1800);
+    }
+    document.getElementById("year").textContent=new Date().getFullYear();
+  </script>
+</body>
+</html>
