@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#080808">
+<title>Sign in | RAK Editing Studio</title>
+<link rel="icon" type="image/png" sizes="64x64" href="assets/rak-logo-64.png">
+<style>
+:root{color-scheme:dark;--gold:#f3bd54;--bg:#080808;--panel:#14110c;--line:#614a25}
+*{box-sizing:border-box}body{margin:0;min-height:100vh;background:radial-gradient(ellipse at 50% 0%,#5a3b1b55,transparent 48%),var(--bg);color:#f7f7f7;font:16px/1.55 Arial,sans-serif;display:grid;place-items:center;padding:20px}
+.card{width:min(440px,100%);padding:26px;border:1px solid var(--line);border-radius:22px;background:linear-gradient(145deg,#17130c,#0e0e0e);box-shadow:0 22px 70px #0009}
+.brand{text-align:center;margin-bottom:20px}.brand img{width:66px;height:66px;object-fit:contain}.brand h1{font-size:21px;letter-spacing:.8px;margin:8px 0 2px;color:var(--gold)}.brand p{margin:0;color:#aaa;font-size:13px}
+h2{font-size:22px;margin:8px 0;color:var(--gold)}.sub{color:#bbb;font-size:13px;margin:0 0 18px}
+button,input{font:inherit;width:100%;border-radius:10px;padding:12px;border:1px solid #383838}
+input{background:#090909;color:#fff;margin:6px 0 12px}
+button{cursor:pointer;font-weight:700;background:linear-gradient(135deg,#f3bd54,#c68b2c);color:#17110a;border-color:#8d682d;margin:6px 0}
+button.secondary{background:#191919;color:#eee;border-color:#444}
+label{display:block;font-size:13px;color:#ddd;margin-top:8px}
+.row{display:flex;gap:10px;align-items:center;margin:12px 0;color:#777;font-size:12px}.row:before,.row:after{content:"";height:1px;background:#333;flex:1}
+.links{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-top:12px}.links button{width:auto;background:none;border:0;color:var(--gold);padding:4px;font-size:13px}
+#status{min-height:22px;color:#f3d08a;font-size:13px;margin-top:12px;overflow-wrap:anywhere}
+.back{display:block;text-align:center;color:#bbb;font-size:13px;text-decoration:none;margin-top:18px}.back:hover{color:var(--gold)}
+.hidden{display:none!important}
+</style>
+</head>
+<body>
+<main class="card">
+  <div class="brand">
+    <img src="assets/rak-logo-192.png" alt="RAK Editing Studio logo">
+    <h1>RAK EDITING STUDIO</h1>
+    <p>Sign in to continue creating</p>
+  </div>
+  <section id="loginView">
+    <h2>Welcome back</h2>
+    <p class="sub">Sign in to your RAK account to use this feature.</p>
+    <button id="googleLogin" type="button">G&nbsp; Continue with Google</button>
+    <div class="row">OR USE RAK ACCOUNT</div>
+    <form id="loginForm">
+      <label for="email">Email address</label>
+      <input id="email" type="email" autocomplete="email" placeholder="you@example.com" required>
+      <label for="password">RAK password</label>
+      <input id="password" type="password" autocomplete="current-password" placeholder="Enter your RAK password" required>
+      <button id="loginSubmit" type="submit">Login</button>
+    </form>
+    <div class="links">
+      <button id="forgotBtn" type="button">Forgot password?</button>
+      <button id="createBtn" type="button">Create account</button>
+    </div>
+  </section>
+  <section id="signupView" class="hidden">
+    <h2>Create your account</h2>
+    <p class="sub">First verify your email securely with Google. Then create a separate RAK password.</p>
+    <button id="googleSignup" type="button">G&nbsp; Continue with Google</button>
+    <div class="links"><button class="backLogin" type="button">Back to login</button></div>
+  </section>
+  <section id="passwordView" class="hidden">
+    <h2 id="passwordTitle">Create RAK password</h2>
+    <p class="sub" id="passwordHelp">Choose a password used only for RAK Editing Studio. It is not your Google password.</p>
+    <form id="passwordForm">
+      <label for="newPassword">New RAK password</label>
+      <input id="newPassword" type="password" minlength="8" maxlength="72" autocomplete="new-password" placeholder="At least 8 characters" required>
+      <label for="confirmPassword">Confirm password</label>
+      <input id="confirmPassword" type="password" minlength="8" maxlength="72" autocomplete="new-password" placeholder="Enter it again" required>
+      <button type="submit">Save password</button>
+    </form>
+  </section>
+  <section id="forgotView" class="hidden">
+    <h2>Reset your password</h2>
+    <p class="sub">Enter your email. If password recovery email is enabled for this project, Supabase will send a secure reset link.</p>
+    <form id="forgotForm">
+      <label for="resetEmail">Email address</label>
+      <input id="resetEmail" type="email" autocomplete="email" placeholder="you@example.com" required>
+      <button type="submit">Send reset link</button>
+    </form>
+    <div class="links"><button class="backLogin" type="button">Back to login</button></div>
+  </section>
+  <p id="status" role="status" aria-live="polite"></p>
+  <a class="back" id="backHome" href="./">← Back to RAK Editing Studio</a>
+</main>
+<script type="module">
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY } from "./supabase-config.js";
+const supabase=createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
+const $=id=>document.getElementById(id);
+const params=new URLSearchParams(location.search);
+const rawReturn=params.get("returnTo")||"./";
+const safeReturn=rawReturn.startsWith("/")&&!rawReturn.startsWith("//")?rawReturn:"./";
+const status=(message)=>$("status").textContent=message;
+function view(id){["loginView","signupView","passwordView","forgotView"].forEach(x=>$(x).classList.toggle("hidden",x!==id));status("");}
+function finish(){localStorage.removeItem("rak_google_signup_pending");location.replace(safeReturn);}
+async function google(signup){
+  try{
+    if(signup)localStorage.setItem("rak_google_signup_pending","true");
+    else localStorage.removeItem("rak_google_signup_pending");
+    status("Opening Google's secure sign-in…");
+    const {error}=await supabase.auth.signInWithOAuth({provider:"google",options:{redirectTo:location.origin+location.pathname+"?returnTo="+encodeURIComponent(safeReturn),queryParams:{prompt:"select_account"},scopes:"openid email profile"}});
+    if(error)throw error;
+  }catch(e){status(e.message||"Google sign-in could not start.");}
+}
+$("googleLogin").addEventListener("click",()=>google(false));
+$("googleSignup").addEventListener("click",()=>google(true));
+$("createBtn").addEventListener("click",()=>view("signupView"));
+document.querySelectorAll(".backLogin").forEach(b=>b.addEventListener("click",()=>view("loginView")));
+$("forgotBtn").addEventListener("click",()=>view("forgotView"));
+$("loginForm").addEventListener("submit",async e=>{
+  e.preventDefault();const btn=$("loginSubmit");btn.disabled=true;status("Signing in…");
+  try{const {error}=await supabase.auth.signInWithPassword({email:$("email").value.trim(),password:$("password").value});if(error)throw error;finish();}
+  catch(err){status(err.message||"Login failed. Check your email and RAK password.");}
+  finally{btn.disabled=false;}
+});
+$("passwordForm").addEventListener("submit",async e=>{
+  e.preventDefault();const p=$("newPassword").value,c=$("confirmPassword").value;
+  if(p.length<8){status("Use at least 8 characters.");return;}if(p!==c){status("Passwords do not match.");return;}
+  status("Saving password…");
+  try{const {error}=await supabase.auth.updateUser({password:p});if(error)throw error;status("Password saved. Opening your feature…");finish();}
+  catch(err){status(err.message||"Could not save password.");}
+});
+$("forgotForm").addEventListener("submit",async e=>{
+  e.preventDefault();status("Sending reset link…");
+  try{const {error}=await supabase.auth.resetPasswordForEmail($("resetEmail").value.trim(),{redirectTo:location.origin+location.pathname+"?returnTo="+encodeURIComponent(safeReturn)});if(error)throw error;status("If recovery email is configured, a secure reset link has been sent. Check your inbox.");}
+  catch(err){status(err.message||"Could not send reset email. Email delivery may need setup by the site owner.");}
+});
+$("backHome").href="./";
+supabase.auth.onAuthStateChange((event,session)=>{
+  if(event==="PASSWORD_RECOVERY"){view("passwordView");$("passwordTitle").textContent="Set a new RAK password";$("passwordHelp").textContent="Choose a new password for your RAK account.";}
+  else if(event==="SIGNED_IN"&&session?.user){
+    if(localStorage.getItem("rak_google_signup_pending")==="true"){view("passwordView");$("passwordTitle").textContent="Create RAK password";$("passwordHelp").textContent="Google verified your email. Now choose a separate RAK password.";status("Google verification successful.");}
+    else finish();
+  }
+});
+const {data,error}=await supabase.auth.getSession();
+if(error)status(error.message);
+if(data?.session?.user){
+  if(localStorage.getItem("rak_google_signup_pending")==="true"){view("passwordView");status("Google verification successful. Create your RAK password.");}
+  else if(params.get("type")==="recovery"){view("passwordView");$("passwordTitle").textContent="Set a new RAK password";}
+  else finish();
+}else if(params.get("type")==="recovery"){view("passwordView");$("passwordTitle").textContent="Set a new RAK password";}
+</script>
+</body>
+</html>
