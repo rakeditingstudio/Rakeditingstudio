@@ -73,6 +73,26 @@
  .site-menu{left:2%!important;top:60px!important;width:min(290px,88vw)}
 }
 
+
+/* Logo at the upper corner; section menu slightly lower on the side */
+.top .nav{height:104px!important;min-height:104px!important;padding:8px 62px!important;justify-content:center!important}
+.top .brand{position:absolute!important;left:10px!important;top:6px!important;width:calc(100% - 20px);height:48px;justify-content:center!important;pointer-events:none}
+.top .brand>img{position:absolute;left:0;top:0;width:44px!important;height:44px!important;max-width:44px;flex-basis:44px;pointer-events:auto}
+.top .brand>span{pointer-events:auto}
+.site-menu-toggle{left:12px!important;right:auto!important;top:57px!important;width:40px;height:40px}
+.site-menu{left:12px!important;right:auto!important;top:103px!important}
+.top .profile-menu{right:12px!important;left:auto!important;top:12px!important}
+@media(max-width:560px){
+ .top .nav{height:100px!important;min-height:100px!important;padding:8px 54px!important}
+ .top .brand{left:8px!important;top:5px!important;width:calc(100% - 16px);height:44px;font-size:12px!important}
+ .top .brand>img{width:40px!important;height:40px!important;max-width:40px;flex-basis:40px}
+ .top .brand>span{font-size:12px;letter-spacing:.25px}
+ .site-menu-toggle{left:10px!important;right:auto!important;top:54px!important;width:38px;height:38px}
+ .site-menu{left:10px!important;right:auto!important;top:98px!important;width:min(290px,88vw)}
+ .top .profile-menu{right:10px!important;left:auto!important;top:9px!important}
+ .profile-icon{width:40px!important;height:40px!important}
+}
+
 </style>
 </head>
 <body>
