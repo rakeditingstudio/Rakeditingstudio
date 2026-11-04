@@ -66,9 +66,16 @@ function installAccountUI() {
   const password = byId("rakAccountPassword");
   const submit = byId("rakAccountSubmit");
   const message = byId("rakAccountMessage");
+  let loginMode = false;
 
   byId("rakAccountClose").addEventListener("click", () => panel.classList.add("hidden"));
   window.rakShowSignupPasswordStage = (verifiedEmail) => {
+    loginMode = false;
+    emailInput.readOnly = true;
+    byId("rakAccountTitle").textContent = "Create your RAK password";
+    byId("rakAccountHelp").textContent = "Google has verified your account. Choose a separate password for RAK Editing Studio.";
+    submit.textContent = "Save RAK password";
+    password.autocomplete = "new-password";
     emailInput.value = verifiedEmail || "";
     password.value = "";
     panel.classList.remove("hidden");
@@ -80,6 +87,21 @@ function installAccountUI() {
     event.preventDefault();
     if (!window.rakSupabase) {
       message.textContent = "Account service is not ready. Please reload and try again.";
+      return;
+    }
+    if (loginMode) {
+      submit.disabled = true;
+      message.textContent = "Signing in…";
+      try {
+        const { error } = await window.rakSupabase.auth.signInWithPassword({ email: emailInput.value.trim(), password: password.value });
+        if (error) throw error;
+        message.textContent = "Login successful.";
+        panel.classList.add("hidden");
+      } catch (error) {
+        message.textContent = error?.message || "Login failed. Check your email and RAK password.";
+      } finally {
+        submit.disabled = false;
+      }
       return;
     }
     if (password.value.length < 8) {
@@ -187,6 +209,7 @@ if (!googleButton || !menuToggle || !signOutButton) {
         const panel = byId("rakAccountPanel");
         if (!panel) return;
         panel.classList.remove("hidden");
+        loginMode = true;
         byId("rakAccountTitle").textContent = "Login to RAK Editing Studio";
         byId("rakAccountHelp").textContent = "Use your verified email and your separate RAK password. You can also use Continue with Google.";
         byId("rakAccountEmail").readOnly = false;
@@ -194,8 +217,9 @@ if (!googleButton || !menuToggle || !signOutButton) {
         byId("rakAccountPassword").autocomplete = "current-password";
         byId("rakAccountSubmit").textContent = "Login";
         byId("rakAccountMessage").textContent = "";
-        const form = byId("rakAccountForm");
-        form.onsubmit = async (event) => {
+        /* The shared form submit handler switches to password login mode. */
+        /* no separate submit handler is installed here */
+        /*
           event.preventDefault();
           const email = byId("rakAccountEmail").value.trim();
           const password = byId("rakAccountPassword").value;
@@ -213,7 +237,7 @@ if (!googleButton || !menuToggle || !signOutButton) {
           } finally {
             submit.disabled = false;
           }
-        };
+        }; */
       });
 
       moreOptionsButton?.addEventListener("click", () => {
