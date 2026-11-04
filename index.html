@@ -38,14 +38,14 @@
 
 /* Logo centered; section menu fixed in the top-left, account in top-right */
 .top .nav{position:relative;min-height:0;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:7px;padding:9px 0}
-.site-menu-toggle{position:absolute;left:4%;top:12px;width:42px;height:36px;padding:0;border:1px solid #614a25;border-radius:10px;background:#17130d;color:var(--gold);font-size:29px;line-height:1;display:grid;place-items:center;z-index:32}
-.site-menu{display:none;position:absolute;left:4%;top:54px;flex-direction:column;gap:0;width:min(340px,92vw);max-height:65vh;overflow-y:auto;border:1px solid #614a25;border-radius:14px;background:#14110c;box-shadow:0 14px 35px #000b;padding:7px;z-index:31}
+.site-menu-toggle{position:absolute!important;left:4%!important;right:auto!important;top:12px;width:42px;height:36px;padding:0;border:1px solid #614a25;border-radius:10px;background:#17130d;color:var(--gold);font-size:29px;line-height:1;display:grid;place-items:center;z-index:32}
+.site-menu{display:none;position:absolute;left:4%!important;right:auto!important;top:54px;flex-direction:column;gap:0;width:min(340px,92vw);max-height:65vh;overflow-y:auto;border:1px solid #614a25;border-radius:14px;background:#14110c;box-shadow:0 14px 35px #000b;padding:7px;z-index:31}
 .site-menu.open{display:flex}
 .site-menu a{display:block;width:100%;padding:11px 14px;border-bottom:1px solid #29231a;text-decoration:none;color:#eee;font-size:14px}
 .site-menu a:last-child{border-bottom:0}
 .site-menu a:hover,.site-menu a:focus{background:#241b0d;color:var(--gold)}
-.top .profile-menu{position:absolute;right:4%;top:10px;margin:0;z-index:30}
-@media(max-width:760px){.top .nav{align-items:center;flex-direction:column;flex-wrap:nowrap;padding:9px 0;gap:7px}.top .nav nav.site-menu{order:initial;width:min(340px,92vw)}.site-menu-toggle{left:4%;right:auto;top:10px}.site-menu{left:4%;right:auto;top:52px}.top .profile-menu{position:absolute;right:4%;left:auto;top:10px;margin:0;align-self:auto}}
+.top .profile-menu{position:absolute!important;right:4%!important;left:auto!important;top:10px;margin:0;z-index:30}
+@media(max-width:760px){.top .nav{align-items:center;flex-direction:column;flex-wrap:nowrap;padding:9px 0;gap:7px}.top .nav nav.site-menu{order:initial;width:min(340px,92vw)}.site-menu-toggle{left:4%!important;right:auto!important;top:10px}.site-menu{left:4%!important;right:auto!important;top:52px}.top .profile-menu{position:absolute!important;right:4%!important;left:auto!important;top:10px;margin:0;align-self:auto}}
 
 </style>
 </head>
