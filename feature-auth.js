@@ -29,7 +29,7 @@ function showPrompt() {
       </div>`;
     document.body.appendChild(promptBox);
     promptBox.querySelector("#rakFeatureSignInClose").addEventListener("click",()=>promptBox.remove());
-    promptBox.querySelector("#rakFeatureSignInGo").addEventListener("click",()=>{ window.location.href="./?signin=1"; });
+    promptBox.querySelector("#rakFeatureSignInGo").addEventListener("click",()=>{ const returnTo = window.location.pathname + window.location.search + window.location.hash; window.location.href="signin.html?returnTo="+encodeURIComponent(returnTo); });
     promptBox.addEventListener("click",e=>{if(e.target===promptBox)promptBox.remove();});
   }
 }
