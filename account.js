@@ -179,15 +179,7 @@ function installAccountUI() {
     }
   });
 
-  const pendingEmail = localStorage.getItem("rak_pending_email_verification");
-  if (pendingEmail && window.rakSupabase?.auth) {
-    window.rakSupabase.auth.getSession().then(({data}) => {
-      const verifiedUser = data?.session?.user;
-      if (verifiedUser?.email?.toLowerCase() === pendingEmail.toLowerCase()) {
-        showPasswordStage(verifiedUser.email);
-      }
-    }).catch(() => {});
-  }
+  window.rakShowSignupPasswordStage = showPasswordStage;
 }
 
 function showUser(user) {
@@ -272,20 +264,7 @@ if (!googleButton || !menuToggle || !signOutButton) {
           setStatus("Account connected successfully.");
           const pendingEmail = localStorage.getItem("rak_pending_email_verification");
           if (pendingEmail && session?.user?.email?.toLowerCase() === pendingEmail.toLowerCase()) {
-            byId("rakAccountPanel")?.classList.remove("hidden");
-            const emailInput = byId("rakAccountEmail");
-            if (emailInput) emailInput.value = session.user.email;
-            emailInput && (emailInput.readOnly = true);
-            byId("rakPasswordField")?.classList.remove("hidden");
-            const password = byId("rakAccountPassword");
-            if (password) { password.required = true; password.autocomplete = "new-password"; }
-            if (byId("rakAccountTitle")) byId("rakAccountTitle").textContent = "Email verified — create password";
-            if (byId("rakAccountHelp")) byId("rakAccountHelp").textContent = "Your email is verified. Now create a separate RAK password (not your Google/Gmail password).";
-            if (byId("rakAccountSubmit")) byId("rakAccountSubmit").textContent = "Save password";
-            if (byId("rakAccountSwitch")) byId("rakAccountSwitch").classList.add("hidden");
-            const form = byId("rakAccountForm");
-            if (form) form.dataset.stage = "password";
-            window.rakSignupPasswordStage = true;
+            window.rakShowSignupPasswordStage?.(session.user.email);
           }
         }
         if (event === "SIGNED_OUT") setStatus("You have been signed out.");
@@ -293,6 +272,10 @@ if (!googleButton || !menuToggle || !signOutButton) {
       const { data, error } = await supabase.auth.getSession();
       if (error) setStatus("Could not restore login: " + error.message, true);
       showUser(data?.session?.user || null);
+      const pendingEmail = localStorage.getItem("rak_pending_email_verification");
+      if (pendingEmail && data?.session?.user?.email?.toLowerCase() === pendingEmail.toLowerCase()) {
+        window.rakShowSignupPasswordStage?.(data.session.user.email);
+      }
       const params = new URLSearchParams(window.location.search);
       const oauthError = params.get("error_description") || params.get("error");
       if (oauthError) setStatus("Google sign-in error: " + oauthError, true);
