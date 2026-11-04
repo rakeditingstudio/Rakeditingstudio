@@ -354,6 +354,7 @@ if (!googleButton || !menuToggle || !signOutButton) {
         window.rakShowSignupPasswordStage?.(data.session.user.email);
       }
       const params = new URLSearchParams(window.location.search);
+      if (params.get("signin") === "1") { popover?.classList.remove("hidden"); menuToggle?.setAttribute("aria-expanded", "true"); }
       const oauthError = params.get("error_description") || params.get("error");
       if (oauthError) setStatus("Google sign-in error: " + oauthError, true);
     } catch (error) {
