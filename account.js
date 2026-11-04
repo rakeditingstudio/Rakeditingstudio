@@ -2,11 +2,14 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY } from "./supabase-config.js";
 
 const byId = (id) => document.getElementById(id);
-const signInButton = byId("googleSignInBtn");
-const profileDetails = byId("profileDetails");
-const status = byId("googleAuthStatus");
-const signOutButton = byId("googleSignOutBtn");
 const menu = byId("profileMenu");
+const menuToggle = byId("profileMenuToggle");
+const popover = byId("rakProfilePopover");
+const googleButton = byId("googleSignInBtn");
+const createButton = byId("rakCreateAccountBtn");
+const status = byId("googleAuthStatus");
+const signedInInfo = byId("rakSignedInInfo");
+const signOutButton = byId("googleSignOutBtn");
 
 function setStatus(message, isError = false) {
   if (!status) return;
@@ -14,12 +17,16 @@ function setStatus(message, isError = false) {
   status.dataset.error = isError ? "true" : "false";
 }
 
+function closeMenu() {
+  if (popover) popover.classList.add("hidden");
+  if (menuToggle) menuToggle.setAttribute("aria-expanded", "false");
+}
+
 function installAccountUI() {
   if (!menu || byId("rakAccountPanel")) return;
   const style = document.createElement("style");
   style.textContent = `
-    #rakCreateAccountBtn{margin-left:8px;padding:9px 12px;font-size:12px}
-    #rakAccountPanel{position:absolute;right:0;top:54px;z-index:40;width:min(340px,92vw);padding:17px;border:1px solid #614a25;border-radius:15px;background:#14110c;box-shadow:0 14px 40px #000c}
+    #rakAccountPanel{position:absolute;right:0;top:60px;z-index:45;width:min(340px,92vw);padding:17px;border:1px solid #b88936;border-radius:15px;background:#14110c;box-shadow:0 14px 40px #000c}
     #rakAccountPanel h3{margin:0 0 5px;color:#f3bd54}
     #rakAccountPanel p{font-size:12px;color:#bbb;margin:4px 0 12px}
     #rakAccountPanel label{display:block;font-size:12px;color:#ddd;margin-top:9px}
@@ -31,12 +38,6 @@ function installAccountUI() {
     #rakAccountMessage{min-height:18px;color:#f3d08a!important;overflow-wrap:anywhere}
   `;
   document.head.appendChild(style);
-  const createButton = document.createElement("button");
-  createButton.type = "button";
-  createButton.id = "rakCreateAccountBtn";
-  createButton.className = "secondary";
-  createButton.textContent = "Create account / Login";
-  menu.insertBefore(createButton, profileDetails || null);
 
   const panel = document.createElement("section");
   panel.id = "rakAccountPanel";
@@ -45,7 +46,7 @@ function installAccountUI() {
   panel.innerHTML = `
     <button type="button" id="rakAccountClose" class="rak-account-close" aria-label="Close">✕</button>
     <h3 id="rakAccountTitle">Create your RAK account</h3>
-    <p>Use your email address and create a separate RAK password. This is not your Google/Gmail password.</p>
+    <p>Use your email and create a separate RAK password. This is not your Google/Gmail password.</p>
     <form id="rakAccountForm">
       <label for="rakAccountEmail">Email address</label>
       <input id="rakAccountEmail" type="email" autocomplete="email" required maxlength="254" placeholder="you@example.com">
@@ -76,15 +77,20 @@ function installAccountUI() {
     switcher.textContent = mode === "signup" ? "Already have an account? Login" : "New here? Create account";
     message.textContent = "";
   };
-  createButton.addEventListener("click", () => {
-    panel.classList.toggle("hidden");
-    if (!panel.classList.contains("hidden")) setMode("signup");
+
+  createButton?.addEventListener("click", () => {
+    closeMenu();
+    panel.classList.remove("hidden");
+    setMode("signup");
   });
   byId("rakAccountClose").addEventListener("click", () => panel.classList.add("hidden"));
   switcher.addEventListener("click", () => setMode(mode === "signup" ? "login" : "signup"));
   form.addEventListener("submit", async (event) => {
     event.preventDefault();
-    if (!window.rakSupabase) return;
+    if (!window.rakSupabase) {
+      message.textContent = "Account service is not ready. Please reload and try again.";
+      return;
+    }
     const email = byId("rakAccountEmail").value.trim();
     const pass = password.value;
     submit.disabled = true;
@@ -92,20 +98,18 @@ function installAccountUI() {
     try {
       if (mode === "signup") {
         const { data, error } = await window.rakSupabase.auth.signUp({
-          email,
-          password: pass,
+          email, password: pass,
           options: { emailRedirectTo: window.location.origin + window.location.pathname }
         });
         if (error) throw error;
-        if (data.session) {
-          message.textContent = "Account created and signed in successfully.";
-        } else {
-          message.textContent = "Account created. Check your email for the confirmation link, then return here to login.";
-        }
+        message.textContent = data.session
+          ? "Account created and signed in successfully."
+          : "Account created. Check your email for the confirmation link, then return here to login.";
       } else {
         const { error } = await window.rakSupabase.auth.signInWithPassword({ email, password: pass });
         if (error) throw error;
         message.textContent = "Login successful.";
+        panel.classList.add("hidden");
       }
     } catch (error) {
       message.textContent = error?.message || "Could not complete this request. Please try again.";
@@ -116,35 +120,33 @@ function installAccountUI() {
 }
 
 function showUser(user) {
-  if (!signInButton || !profileDetails) return;
   const signedIn = Boolean(user);
-  signInButton.classList.toggle("hidden", signedIn);
-  profileDetails.classList.toggle("hidden", !signedIn);
-  const createButton = byId("rakCreateAccountBtn");
+  if (googleButton) googleButton.classList.toggle("hidden", signedIn);
   if (createButton) createButton.classList.toggle("hidden", signedIn);
+  if (signedInInfo) signedInInfo.classList.toggle("hidden", !signedIn);
   if (!signedIn) {
-    byId("googleUserName").textContent = "";
-    byId("googleUserEmail").textContent = "";
-    byId("googleUserAvatar").removeAttribute("src");
-    profileDetails.open = false;
-    signInButton.setAttribute("aria-label", "Sign in with Google");
-    signInButton.title = "Sign in with Google";
+    if (byId("googleUserName")) byId("googleUserName").textContent = "";
+    if (byId("googleUserEmail")) byId("googleUserEmail").textContent = "";
     return;
   }
   const meta = user.user_metadata || {};
-  byId("googleUserName").textContent = meta.full_name || meta.name || "RAK account";
-  byId("googleUserEmail").textContent = user.email || "";
-  const avatar = meta.avatar_url || meta.picture || "";
-  const image = byId("googleUserAvatar");
-  if (avatar && /^https:\/\//i.test(avatar)) image.src = avatar;
-  else image.removeAttribute("src");
-  const panel = byId("rakAccountPanel");
-  if (panel) panel.classList.add("hidden");
+  if (byId("googleUserName")) byId("googleUserName").textContent = meta.full_name || meta.name || "RAK account";
+  if (byId("googleUserEmail")) byId("googleUserEmail").textContent = user.email || "";
+  byId("rakAccountPanel")?.classList.add("hidden");
 }
 
 installAccountUI();
 
-if (!signInButton || !profileDetails || !signOutButton) {
+menuToggle?.addEventListener("click", () => {
+  const opening = popover?.classList.contains("hidden");
+  popover?.classList.toggle("hidden", !opening);
+  menuToggle.setAttribute("aria-expanded", String(Boolean(opening)));
+});
+document.addEventListener("click", (event) => {
+  if (menu && !menu.contains(event.target)) closeMenu();
+});
+
+if (!googleButton || !menuToggle || !signOutButton) {
   console.error("RAK account UI elements are missing.");
 } else {
   const configured =
@@ -153,7 +155,7 @@ if (!signInButton || !profileDetails || !signOutButton) {
     SUPABASE_PUBLISHABLE_KEY.startsWith("sb_publishable_");
 
   if (!configured) {
-    signInButton.disabled = true;
+    googleButton.disabled = true;
     setStatus("Account setup is incomplete. Please contact the site owner.", true);
   } else {
     try {
@@ -162,19 +164,22 @@ if (!signInButton || !profileDetails || !signOutButton) {
       });
       window.rakSupabase = supabase;
       window.rakGoogleAuthReady = true;
-      signInButton.addEventListener("click", async () => {
-        signInButton.disabled = true;
+      googleButton.addEventListener("click", async () => {
+        googleButton.disabled = true;
         setStatus("Opening Google sign-in…");
         try {
-          const redirectTo = window.location.origin + window.location.pathname;
           const { error } = await supabase.auth.signInWithOAuth({
             provider: "google",
-            options: { redirectTo, queryParams: { prompt: "select_account" }, scopes: "openid email profile" }
+            options: {
+              redirectTo: window.location.origin + window.location.pathname,
+              queryParams: { prompt: "select_account" },
+              scopes: "openid email profile"
+            }
           });
           if (error) throw error;
         } catch (error) {
           setStatus("Google sign-in could not start: " + (error?.message || "Unknown error"), true);
-          signInButton.disabled = false;
+          googleButton.disabled = false;
         }
       });
       signOutButton.addEventListener("click", async () => {
@@ -182,6 +187,7 @@ if (!signInButton || !profileDetails || !signOutButton) {
         try {
           const { error } = await supabase.auth.signOut();
           if (error) throw error;
+          closeMenu();
         } catch (error) {
           setStatus("Sign-out failed: " + (error?.message || "Unknown error"), true);
         } finally {
@@ -200,7 +206,7 @@ if (!signInButton || !profileDetails || !signOutButton) {
       const oauthError = params.get("error_description") || params.get("error");
       if (oauthError) setStatus("Google sign-in error: " + oauthError, true);
     } catch (error) {
-      signInButton.disabled = true;
+      googleButton.disabled = true;
       setStatus("Account system could not load: " + (error?.message || "Please reload the page."), true);
       console.error("RAK account initialization failed:", error);
     }
