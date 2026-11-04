@@ -15,6 +15,66 @@ const signedInInfo = byId("rakSignedInInfo");
 const signOutButton = byId("googleSignOutBtn");
 let rakAccountLoginMode = false;
 
+let rakCurrentUser = null;
+let rakSignInPrompt = null;
+
+function showSignInPrompt() {
+  if (!rakSignInPrompt) {
+    rakSignInPrompt = document.createElement("div");
+    rakSignInPrompt.id = "rakSignInRequired";
+    rakSignInPrompt.setAttribute("role", "dialog");
+    rakSignInPrompt.setAttribute("aria-modal", "true");
+    rakSignInPrompt.setAttribute("aria-labelledby", "rakSignInRequiredTitle");
+    rakSignInPrompt.style.cssText = "position:fixed;inset:0;z-index:9999;display:grid;place-items:center;padding:18px;background:#000b";
+    rakSignInPrompt.innerHTML = `
+      <div style="width:min(390px,100%);padding:22px;border:1px solid #b88936;border-radius:18px;background:#14110c;box-shadow:0 18px 60px #000c;text-align:center">
+        <div style="font-size:34px;color:#f3bd54">🔒</div>
+        <h2 id="rakSignInRequiredTitle" style="margin:8px 0;color:#f3bd54">Sign in first</h2>
+        <p style="margin:0 0 18px;color:#ddd">Please sign in to your RAK Editing Studio account to use this feature.</p>
+        <button type="button" id="rakSignInRequiredContinue">Sign in / Create account</button>
+        <button type="button" id="rakSignInRequiredClose" class="secondary" style="margin-left:7px">Not now</button>
+      </div>`;
+    document.body.appendChild(rakSignInPrompt);
+    byId("rakSignInRequiredClose").addEventListener("click", () => { rakSignInPrompt.style.display = "none"; });
+    byId("rakSignInRequiredContinue").addEventListener("click", () => {
+      rakSignInPrompt.style.display = "none";
+      popover?.classList.remove("hidden");
+      menuToggle?.setAttribute("aria-expanded", "true");
+      menuToggle?.focus();
+    });
+    rakSignInPrompt.addEventListener("click", (event) => {
+      if (event.target === rakSignInPrompt) rakSignInPrompt.style.display = "none";
+    });
+  }
+  rakSignInPrompt.style.display = "grid";
+}
+
+function isAccountOrNavigationControl(target) {
+  return Boolean(target.closest(
+    "#profileMenu, #rakAccountPanel, #rakSignInRequired, header nav, nav, a.brand, a[href^='#'], [data-public-action='true']"
+  ));
+}
+
+document.addEventListener("click", (event) => {
+  if (rakCurrentUser) return;
+  const target = event.target instanceof Element ? event.target : event.target?.parentElement;
+  if (!target || isAccountOrNavigationControl(target)) return;
+  const control = target.closest("button, a, [role='button'], input[type='submit']");
+  if (!control) return;
+  event.preventDefault();
+  event.stopPropagation();
+  event.stopImmediatePropagation();
+  showSignInPrompt();
+}, true);
+
+document.addEventListener("submit", (event) => {
+  if (rakCurrentUser || event.target?.id === "rakAccountForm") return;
+  event.preventDefault();
+  event.stopPropagation();
+  event.stopImmediatePropagation();
+  showSignInPrompt();
+}, true);
+
 function setStatus(message, isError = false) {
   if (!status) return;
   status.textContent = message;
@@ -127,6 +187,7 @@ function installAccountUI() {
 }
 
 function showUser(user) {
+  rakCurrentUser = user || null;
   const signedIn = Boolean(user);
   const avatar = byId("rakProfileAvatar");
   const defaultIcon = byId("rakProfileDefaultIcon");
