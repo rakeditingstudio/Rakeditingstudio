@@ -102,14 +102,13 @@ function installAccountUI() {
     submit.textContent = "Save password";
     switcher.classList.add("hidden");
     panel.classList.remove("hidden");
-    message.textContent = "Email verification successful.";
+    message.textContent = "Google verification successful. Now create your RAK password.";
   };
   createButton?.addEventListener("click", () => {
     closeMenu();
-    panel.classList.remove("hidden");
-    emailInput.readOnly = false;
-    switcher.classList.remove("hidden");
-    setMode("signup");
+    localStorage.setItem("rak_google_signup_pending", "true");
+    setStatus("Opening secure Google verification…");
+    googleButton?.click();
   });
   loginButton?.addEventListener("click", () => {
     closeMenu();
@@ -162,6 +161,7 @@ function installAccountUI() {
         const { error } = await window.rakSupabase.auth.updateUser({ password: pass });
         if (error) throw error;
         localStorage.removeItem("rak_pending_email_verification");
+        localStorage.removeItem("rak_google_signup_pending");
         message.textContent = "Your RAK account is ready. Password saved successfully.";
         panel.classList.add("hidden");
         showUser((await window.rakSupabase.auth.getUser()).data.user);
@@ -262,9 +262,14 @@ if (!googleButton || !menuToggle || !signOutButton) {
         showUser(session?.user || null);
         if (event === "SIGNED_IN") {
           setStatus("Account connected successfully.");
-          const pendingEmail = localStorage.getItem("rak_pending_email_verification");
-          if (pendingEmail && session?.user?.email?.toLowerCase() === pendingEmail.toLowerCase()) {
+          const googleSignupPending = localStorage.getItem("rak_google_signup_pending") === "true";
+          if (googleSignupPending && session?.user?.email) {
             window.rakShowSignupPasswordStage?.(session.user.email);
+          } else {
+            const pendingEmail = localStorage.getItem("rak_pending_email_verification");
+            if (pendingEmail && session?.user?.email?.toLowerCase() === pendingEmail.toLowerCase()) {
+              window.rakShowSignupPasswordStage?.(session.user.email);
+            }
           }
         }
         if (event === "SIGNED_OUT") setStatus("You have been signed out.");
@@ -272,9 +277,14 @@ if (!googleButton || !menuToggle || !signOutButton) {
       const { data, error } = await supabase.auth.getSession();
       if (error) setStatus("Could not restore login: " + error.message, true);
       showUser(data?.session?.user || null);
-      const pendingEmail = localStorage.getItem("rak_pending_email_verification");
-      if (pendingEmail && data?.session?.user?.email?.toLowerCase() === pendingEmail.toLowerCase()) {
+      const googleSignupPending = localStorage.getItem("rak_google_signup_pending") === "true";
+      if (googleSignupPending && data?.session?.user?.email) {
         window.rakShowSignupPasswordStage?.(data.session.user.email);
+      } else {
+        const pendingEmail = localStorage.getItem("rak_pending_email_verification");
+        if (pendingEmail && data?.session?.user?.email?.toLowerCase() === pendingEmail.toLowerCase()) {
+          window.rakShowSignupPasswordStage?.(data.session.user.email);
+        }
       }
       const params = new URLSearchParams(window.location.search);
       const oauthError = params.get("error_description") || params.get("error");
