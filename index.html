@@ -178,8 +178,13 @@
     min-height: 180px !important;
     display: none;
     flex-direction: column !important;
-    overflow-y: scroll !important;
+    flex-wrap: nowrap !important;
+    align-items: stretch !important;
+    overflow-y: auto !important;
     overflow-x: hidden !important;
+    overscroll-behavior: contain !important;
+    scrollbar-width: thin !important;
+    scrollbar-color: #d5a64c #17130d !important;
     overscroll-behavior-y: contain !important;
     -webkit-overflow-scrolling: touch !important;
     touch-action: pan-y !important;
@@ -321,7 +326,25 @@ if(siteMenuToggle&&mainSiteNav){
     const isOpen=mainSiteNav.classList.toggle('open');
     siteMenuToggle.setAttribute('aria-expanded',String(isOpen));
     siteMenuToggle.setAttribute('aria-label',isOpen?'Close website sections':'Open website sections');
+    if(isOpen) mainSiteNav.scrollTop=0;
   });
+  // Fallback touch scrolling for Android in-app browsers.
+  let menuTouchY=null;
+  mainSiteNav.addEventListener('touchstart',event=>{
+    if(event.touches.length===1) menuTouchY=event.touches[0].clientY;
+  },{passive:true});
+  mainSiteNav.addEventListener('touchmove',event=>{
+    if(menuTouchY===null||event.touches.length!==1) return;
+    const nextY=event.touches[0].clientY;
+    const delta=nextY-menuTouchY;
+    menuTouchY=nextY;
+    if(mainSiteNav.scrollHeight>mainSiteNav.clientHeight+1){
+      mainSiteNav.scrollTop-=delta;
+      event.preventDefault();
+    }
+  },{passive:false});
+  mainSiteNav.addEventListener('touchend',()=>{menuTouchY=null;},{passive:true});
+  mainSiteNav.addEventListener('touchcancel',()=>{menuTouchY=null;},{passive:true});
   mainSiteNav.addEventListener('click',event=>{
     if(event.target.closest('a')) closeSiteMenu();
   });
