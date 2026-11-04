@@ -51,7 +51,7 @@ function showSignInPrompt() {
 
 function isAccountOrNavigationControl(target) {
   return Boolean(target.closest(
-    "#profileMenu, #rakAccountPanel, #rakSignInRequired, header nav, nav, a.brand, a[href^='#'], [data-public-action='true']"
+    "#profileMenu, #rakAccountPanel, #rakSignInRequired, a.brand, a[href^='#'], [data-public-action='true']"
   ));
 }
 
