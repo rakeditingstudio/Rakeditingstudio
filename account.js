@@ -48,15 +48,17 @@ function installAccountUI() {
   panel.setAttribute("aria-label", "RAK account");
   panel.innerHTML = `
     <button type="button" id="rakAccountClose" class="rak-account-close" aria-label="Close">✕</button>
-    <h3 id="rakAccountTitle">Create your RAK account</h3>
-    <p>Use your email and create a separate RAK password. This is not your Google/Gmail password.</p>
+    <h3 id="rakAccountTitle">Verify your email first</h3>
+    <p id="rakAccountHelp">Enter your email. We will send a verification link. You will create your RAK password only after verifying your email.</p>
     <form id="rakAccountForm">
       <label for="rakAccountEmail">Email address</label>
       <input id="rakAccountEmail" type="email" autocomplete="email" required maxlength="254" placeholder="you@example.com">
-      <label for="rakAccountPassword">Create password</label>
-      <input id="rakAccountPassword" type="password" autocomplete="new-password" required minlength="8" maxlength="72" placeholder="At least 8 characters">
+      <div id="rakPasswordField" class="hidden">
+        <label for="rakAccountPassword">Create RAK password</label>
+        <input id="rakAccountPassword" type="password" autocomplete="new-password" minlength="8" maxlength="72" placeholder="At least 8 characters">
+      </div>
       <div class="rak-account-actions">
-        <button id="rakAccountSubmit" type="submit">Create account</button>
+        <button id="rakAccountSubmit" type="submit">Send verification link</button>
         <button id="rakAccountSwitch" type="button" class="rak-account-switch">Already have an account? Login</button>
       </div>
     </form>
@@ -65,30 +67,55 @@ function installAccountUI() {
   menu.appendChild(panel);
 
   let mode = "signup";
+  let stage = "verify";
   const form = byId("rakAccountForm");
+  const emailInput = byId("rakAccountEmail");
   const password = byId("rakAccountPassword");
+  const passwordField = byId("rakPasswordField");
   const submit = byId("rakAccountSubmit");
   const switcher = byId("rakAccountSwitch");
   const message = byId("rakAccountMessage");
   const setMode = (next) => {
     mode = next;
-    byId("rakAccountTitle").textContent = mode === "signup" ? "Create your RAK account" : "Login to RAK Editing Studio";
-    submit.textContent = mode === "signup" ? "Create account" : "Login";
-    password.autocomplete = mode === "signup" ? "new-password" : "current-password";
-    password.placeholder = mode === "signup" ? "At least 8 characters" : "Your RAK account password";
-    password.minLength = mode === "signup" ? 8 : 1;
+    stage = next === "signup" ? "verify" : "login";
+    byId("rakAccountTitle").textContent = mode === "signup" ? "Verify your email first" : "Login to RAK Editing Studio";
+    byId("rakAccountHelp").textContent = mode === "signup"
+      ? "Enter your email. We will send a verification link. You will create your RAK password only after verifying your email."
+      : "Login with your verified email and RAK password.";
+    passwordField.classList.toggle("hidden", mode === "signup");
+    password.required = mode === "login";
+    submit.textContent = mode === "signup" ? "Send verification link" : "Login";
+    password.autocomplete = "current-password";
     switcher.textContent = mode === "signup" ? "Already have an account? Login" : "New here? Create account";
     message.textContent = "";
   };
-
+  const showPasswordStage = (verifiedEmail) => {
+    mode = "signup";
+    stage = "password";
+    emailInput.value = verifiedEmail || emailInput.value;
+    emailInput.readOnly = true;
+    passwordField.classList.remove("hidden");
+    password.required = true;
+    password.autocomplete = "new-password";
+    byId("rakAccountTitle").textContent = "Email verified — create password";
+    byId("rakAccountHelp").textContent = "Your email is verified. Now create a separate RAK password (not your Google/Gmail password).";
+    submit.textContent = "Save password";
+    switcher.classList.add("hidden");
+    panel.classList.remove("hidden");
+    message.textContent = "Email verification successful.";
+  };
   createButton?.addEventListener("click", () => {
     closeMenu();
     panel.classList.remove("hidden");
+    emailInput.readOnly = false;
+    switcher.classList.remove("hidden");
     setMode("signup");
   });
   loginButton?.addEventListener("click", () => {
     closeMenu();
     panel.classList.remove("hidden");
+    emailInput.readOnly = false;
+    switcher.classList.remove("hidden");
     setMode("login");
   });
   moreOptionsButton?.addEventListener("click", () => {
@@ -97,39 +124,70 @@ function installAccountUI() {
     moreOptionsButton.setAttribute("aria-expanded", String(Boolean(opening)));
   });
   byId("rakAccountClose").addEventListener("click", () => panel.classList.add("hidden"));
-  switcher.addEventListener("click", () => setMode(mode === "signup" ? "login" : "signup"));
+  switcher.addEventListener("click", () => {
+    emailInput.readOnly = false;
+    switcher.classList.remove("hidden");
+    setMode(mode === "signup" ? "login" : "signup");
+  });
+
   form.addEventListener("submit", async (event) => {
     event.preventDefault();
     if (!window.rakSupabase) {
       message.textContent = "Account service is not ready. Please reload and try again.";
       return;
     }
-    const email = byId("rakAccountEmail").value.trim();
-    const pass = password.value;
+    const email = emailInput.value.trim();
     submit.disabled = true;
-    message.textContent = mode === "signup" ? "Creating your account…" : "Signing in…";
     try {
-      if (mode === "signup") {
-        const { data, error } = await window.rakSupabase.auth.signUp({
-          email, password: pass,
-          options: { emailRedirectTo: window.location.origin + window.location.pathname }
+      if (mode === "signup" && stage === "verify") {
+        message.textContent = "Sending verification link…";
+        const { error } = await window.rakSupabase.auth.signInWithOtp({
+          email,
+          options: {
+            shouldCreateUser: true,
+            emailRedirectTo: window.location.origin + window.location.pathname
+          }
         });
         if (error) throw error;
-        message.textContent = data.session
-          ? "Account created and signed in successfully."
-          : "Account created. Check your email for the confirmation link, then return here to login.";
-      } else {
-        const { error } = await window.rakSupabase.auth.signInWithPassword({ email, password: pass });
-        if (error) throw error;
-        message.textContent = "Login successful.";
-        panel.classList.add("hidden");
+        localStorage.setItem("rak_pending_email_verification", email);
+        message.textContent = "Verification email sent. Open the link in your email; after verification, return here to create your password.";
+        submit.textContent = "Verification link sent";
+        submit.disabled = true;
+        return;
       }
+      if (mode === "signup" && stage === "password") {
+        const pass = password.value;
+        if (pass.length < 8) throw new Error("Use at least 8 characters for your RAK password.");
+        message.textContent = "Saving your password…";
+        const { error } = await window.rakSupabase.auth.updateUser({ password: pass });
+        if (error) throw error;
+        localStorage.removeItem("rak_pending_email_verification");
+        message.textContent = "Your RAK account is ready. Password saved successfully.";
+        panel.classList.add("hidden");
+        showUser((await window.rakSupabase.auth.getUser()).data.user);
+        return;
+      }
+      message.textContent = "Signing in…";
+      const { error } = await window.rakSupabase.auth.signInWithPassword({ email, password: password.value });
+      if (error) throw error;
+      message.textContent = "Login successful.";
+      panel.classList.add("hidden");
     } catch (error) {
       message.textContent = error?.message || "Could not complete this request. Please try again.";
     } finally {
-      submit.disabled = false;
+      if (submit.textContent !== "Verification link sent") submit.disabled = false;
     }
   });
+
+  const pendingEmail = localStorage.getItem("rak_pending_email_verification");
+  if (pendingEmail && window.rakSupabase?.auth) {
+    window.rakSupabase.auth.getSession().then(({data}) => {
+      const verifiedUser = data?.session?.user;
+      if (verifiedUser?.email?.toLowerCase() === pendingEmail.toLowerCase()) {
+        showPasswordStage(verifiedUser.email);
+      }
+    }).catch(() => {});
+  }
 }
 
 function showUser(user) {
@@ -145,7 +203,8 @@ function showUser(user) {
   const meta = user.user_metadata || {};
   if (byId("googleUserName")) byId("googleUserName").textContent = meta.full_name || meta.name || "RAK account";
   if (byId("googleUserEmail")) byId("googleUserEmail").textContent = user.email || "";
-  byId("rakAccountPanel")?.classList.add("hidden");
+  const pending = localStorage.getItem("rak_pending_email_verification");
+  if (!pending) byId("rakAccountPanel")?.classList.add("hidden");
 }
 
 installAccountUI();
@@ -209,7 +268,26 @@ if (!googleButton || !menuToggle || !signOutButton) {
       });
       supabase.auth.onAuthStateChange((event, session) => {
         showUser(session?.user || null);
-        if (event === "SIGNED_IN") setStatus("Account connected successfully.");
+        if (event === "SIGNED_IN") {
+          setStatus("Account connected successfully.");
+          const pendingEmail = localStorage.getItem("rak_pending_email_verification");
+          if (pendingEmail && session?.user?.email?.toLowerCase() === pendingEmail.toLowerCase()) {
+            byId("rakAccountPanel")?.classList.remove("hidden");
+            const emailInput = byId("rakAccountEmail");
+            if (emailInput) emailInput.value = session.user.email;
+            emailInput && (emailInput.readOnly = true);
+            byId("rakPasswordField")?.classList.remove("hidden");
+            const password = byId("rakAccountPassword");
+            if (password) { password.required = true; password.autocomplete = "new-password"; }
+            if (byId("rakAccountTitle")) byId("rakAccountTitle").textContent = "Email verified — create password";
+            if (byId("rakAccountHelp")) byId("rakAccountHelp").textContent = "Your email is verified. Now create a separate RAK password (not your Google/Gmail password).";
+            if (byId("rakAccountSubmit")) byId("rakAccountSubmit").textContent = "Save password";
+            if (byId("rakAccountSwitch")) byId("rakAccountSwitch").classList.add("hidden");
+            const form = byId("rakAccountForm");
+            if (form) form.dataset.stage = "password";
+            window.rakSignupPasswordStage = true;
+          }
+        }
         if (event === "SIGNED_OUT") setStatus("You have been signed out.");
       });
       const { data, error } = await supabase.auth.getSession();
