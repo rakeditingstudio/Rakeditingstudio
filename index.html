@@ -163,7 +163,7 @@ if(durgaCopyButton){durgaCopyButton.addEventListener('click',async()=>{const tex
 const rakCaptionCopy=document.getElementById('copyRakCaptionPrompt');if(rakCaptionCopy){rakCaptionCopy.addEventListener('click',async()=>{const value=document.getElementById('rakCaptionPrompt').innerText;const status=document.getElementById('rakCaptionStatus');try{await navigator.clipboard.writeText(value);status.textContent='Copied! Paste it into your AI tool and replace [TOPIC].'}catch(e){status.textContent='Select the prompt text and copy it manually.'}});}
 el('year').textContent=new Date().getFullYear();render();
 </script>
-<script type="module" src="account.js?v=20261104-google-avatar"></script>
+<script type="module" src="account.js?v=20261104-all-buttons"></script>
 <script src="assets/rak-ai-assistant.js?v=20261025-icon2" defer></script>
 </body>
 </html>
