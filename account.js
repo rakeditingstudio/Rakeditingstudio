@@ -128,6 +128,22 @@ function installAccountUI() {
 
 function showUser(user) {
   const signedIn = Boolean(user);
+  const avatar = byId("rakProfileAvatar");
+  const defaultIcon = byId("rakProfileDefaultIcon");
+  const avatarUrl = user?.user_metadata?.avatar_url || user?.user_metadata?.picture || "";
+  if (avatar && defaultIcon) {
+    if (signedIn && avatarUrl) {
+      avatar.src = avatarUrl;
+      avatar.alt = "Google account profile photo";
+      avatar.classList.remove("hidden");
+      defaultIcon.classList.add("hidden");
+      avatar.onerror = () => { avatar.removeAttribute("src"); avatar.classList.add("hidden"); defaultIcon.classList.remove("hidden"); };
+    } else {
+      avatar.removeAttribute("src");
+      avatar.classList.add("hidden");
+      defaultIcon.classList.remove("hidden");
+    }
+  }
   if (googleButton) googleButton.classList.toggle("hidden", signedIn);
   if (createButton) createButton.classList.toggle("hidden", signedIn);
   signedInInfo?.classList.toggle("hidden", !signedIn);
