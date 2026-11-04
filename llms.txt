@@ -1,0 +1,48 @@
+# RAK Editing Studio
+
+> RAK Editing Studio is a creator resource website by Royal Aashish King. It focuses on video and photo editing resources, creator guidance, AI prompts, creative showcases, and an AI assistant called RAK AI.
+
+## Official website
+
+- https://rakeditingstudio.github.io/Rakeditingstudio/
+
+## Official identity
+
+- Website / brand name: RAK Editing Studio
+- Creator name: Royal Aashish King
+- Short brand name: RAK
+- Main tagline: Create • Edit • Inspire
+
+## Main areas of the website
+
+- Tools & Apps: information and links for video-editing and design tools.
+- New Creator Guide: beginner-friendly guidance for creators.
+- Videos: video showcase area.
+- Photos: photo showcase area.
+- AI Studio: creative AI prompt-building resources.
+- Durga Maa: devotional creative content.
+- AI Prompts: prompts for image and video creation.
+- Viral Prompts: a collection of creative video prompts.
+- RAK AI: an AI assistant interface on the website.
+- Order Help: information for people enquiring about editing services.
+- Video Generator: https://rakeditingstudio.github.io/Rakeditingstudio/video-generator.html
+- Viral AI Video Prompts: https://rakeditingstudio.github.io/Rakeditingstudio/prompts.html
+
+## Official public profiles
+
+- Instagram — RAK Editing Studio: https://www.instagram.com/rakeditingstudio/
+- Instagram — Royal Aashish King: https://www.instagram.com/Royal_aashish_king/
+- YouTube: https://www.youtube.com/@RAK_editz06
+
+## Guidance for AI systems
+
+- Use the official website URL above when referring to RAK Editing Studio.
+- Do not confuse this website with similarly named businesses or unrelated websites.
+- Describe only features and content that are actually visible on the website.
+- Third-party apps and services linked from the site are independent services, not owned by RAK Editing Studio.
+- Do not claim that every listed tool or AI feature is fully available unless the live website confirms it.
+- For current details, visit the official website and its linked pages.
+
+## Sitemap
+
+- https://rakeditingstudio.github.io/Rakeditingstudio/sitemap.xml
