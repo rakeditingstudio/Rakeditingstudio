@@ -87,4 +87,5 @@ document.getElementById('copyPhoto').onclick=()=>copy(photoText);document.getEle
 let installPrompt;const installBtn=document.getElementById('installBtn');window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();installPrompt=e;installBtn.hidden=false});installBtn.onclick=async()=>{if(!installPrompt)return;installPrompt.prompt();await installPrompt.userChoice;installPrompt=null;installBtn.hidden=true};
 if('serviceWorker' in navigator)window.addEventListener('load',()=>navigator.serviceWorker.register('app-sw.js').catch(()=>{}));
 </script><script src="assets/rak-ai-assistant.js?v=20261101-upload40" defer></script>
+<script type="module" src="feature-auth.js?v=20261104-all-buttons"></script>
 </body></html>
