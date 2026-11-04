@@ -187,8 +187,11 @@
     scrollbar-color: #d5a64c #17130d !important;
     overscroll-behavior-y: contain !important;
     -webkit-overflow-scrolling: touch !important;
-    touch-action: pan-y !important;
+    touch-action: none !important;
     pointer-events: auto !important;
+    user-select: none !important;
+    -webkit-user-select: none !important;
+    scroll-behavior: auto !important;
     z-index: 99999 !important;
   }
   #mainSiteNav.site-menu.open { display: flex !important; }
@@ -328,23 +331,65 @@ if(siteMenuToggle&&mainSiteNav){
     siteMenuToggle.setAttribute('aria-label',isOpen?'Close website sections':'Open website sections');
     if(isOpen) mainSiteNav.scrollTop=0;
   });
-  // Fallback touch scrolling for Android in-app browsers.
-  let menuTouchY=null;
+  // Smooth, full-panel drag scrolling with momentum for Android touch browsers.
+  let menuTouchY=null, menuLastTime=0, menuVelocity=0, menuDragged=false, menuMomentumFrame=0;
+  const stopMenuMomentum=()=>{
+    if(menuMomentumFrame) cancelAnimationFrame(menuMomentumFrame);
+    menuMomentumFrame=0;
+  };
+  const runMenuMomentum=()=>{
+    stopMenuMomentum();
+    const step=()=>{
+      mainSiteNav.scrollTop+=menuVelocity;
+      menuVelocity*=0.94;
+      if(Math.abs(menuVelocity)>0.35){
+        menuMomentumFrame=requestAnimationFrame(step);
+      }else{
+        menuMomentumFrame=0;
+        menuVelocity=0;
+      }
+    };
+    if(Math.abs(menuVelocity)>0.6) menuMomentumFrame=requestAnimationFrame(step);
+  };
   mainSiteNav.addEventListener('touchstart',event=>{
-    if(event.touches.length===1) menuTouchY=event.touches[0].clientY;
+    if(event.touches.length!==1) return;
+    stopMenuMomentum();
+    menuTouchY=event.touches[0].clientY;
+    menuLastTime=performance.now();
+    menuVelocity=0;
+    menuDragged=false;
   },{passive:true});
   mainSiteNav.addEventListener('touchmove',event=>{
     if(menuTouchY===null||event.touches.length!==1) return;
+    const now=performance.now();
     const nextY=event.touches[0].clientY;
-    const delta=nextY-menuTouchY;
+    const delta=menuTouchY-nextY;
+    const elapsed=Math.max(1,now-menuLastTime);
     menuTouchY=nextY;
+    menuLastTime=now;
+    if(Math.abs(delta)>1) menuDragged=true;
     if(mainSiteNav.scrollHeight>mainSiteNav.clientHeight+1){
-      mainSiteNav.scrollTop-=delta;
+      mainSiteNav.scrollTop+=delta;
+      menuVelocity=delta/elapsed*16;
       event.preventDefault();
     }
   },{passive:false});
-  mainSiteNav.addEventListener('touchend',()=>{menuTouchY=null;},{passive:true});
-  mainSiteNav.addEventListener('touchcancel',()=>{menuTouchY=null;},{passive:true});
+  mainSiteNav.addEventListener('touchend',()=>{
+    menuTouchY=null;
+    runMenuMomentum();
+  },{passive:true});
+  mainSiteNav.addEventListener('touchcancel',()=>{
+    menuTouchY=null;
+    menuVelocity=0;
+    stopMenuMomentum();
+  },{passive:true});
+  mainSiteNav.addEventListener('click',event=>{
+    if(menuDragged){
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      menuDragged=false;
+    }
+  },true);
   mainSiteNav.addEventListener('click',event=>{
     if(event.target.closest('a')) closeSiteMenu();
   });
