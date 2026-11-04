@@ -7,6 +7,9 @@ const menuToggle = byId("profileMenuToggle");
 const popover = byId("rakProfilePopover");
 const googleButton = byId("googleSignInBtn");
 const createButton = byId("rakCreateAccountBtn");
+const loginButton = byId("rakLoginBtn");
+const moreOptionsButton = byId("rakMoreOptionsBtn");
+const moreOptionsPanel = byId("rakMoreOptionsPanel");
 const status = byId("googleAuthStatus");
 const signedInInfo = byId("rakSignedInInfo");
 const signOutButton = byId("googleSignOutBtn");
@@ -82,6 +85,16 @@ function installAccountUI() {
     closeMenu();
     panel.classList.remove("hidden");
     setMode("signup");
+  });
+  loginButton?.addEventListener("click", () => {
+    closeMenu();
+    panel.classList.remove("hidden");
+    setMode("login");
+  });
+  moreOptionsButton?.addEventListener("click", () => {
+    const opening = moreOptionsPanel?.classList.contains("hidden");
+    moreOptionsPanel?.classList.toggle("hidden", !opening);
+    moreOptionsButton.setAttribute("aria-expanded", String(Boolean(opening)));
   });
   byId("rakAccountClose").addEventListener("click", () => panel.classList.add("hidden"));
   switcher.addEventListener("click", () => setMode(mode === "signup" ? "login" : "signup"));
