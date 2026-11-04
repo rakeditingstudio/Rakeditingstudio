@@ -148,6 +148,19 @@
   scroll-snap-align:start;
 }
 .site-menu.open{display:flex!important}
+/* Desktop and laptop: smooth wheel/trackpad scrolling inside the dropdown */
+@media(min-width:761px){
+  #mainSiteNav.site-menu{
+    max-height:min(70vh,620px)!important;
+    overflow-y:auto!important;
+    overflow-x:hidden!important;
+    overscroll-behavior:contain!important;
+    scroll-behavior:smooth!important;
+    scrollbar-width:thin!important;
+    scrollbar-color:#d5a64c #17130d!important;
+  }
+  #mainSiteNav.site-menu a{flex:0 0 auto!important}
+}
 @media(max-width:560px){
   .site-menu{
     width:min(250px,calc(100vw - 28px))!important;
@@ -331,8 +344,48 @@ if(siteMenuToggle&&mainSiteNav){
     siteMenuToggle.setAttribute('aria-label',isOpen?'Close website sections':'Open website sections');
     if(isOpen) mainSiteNav.scrollTop=0;
   });
-  // Smooth, full-panel drag scrolling with momentum for Android touch browsers.
+  // Smooth scrolling on touch devices, mouse drag, wheel and laptop trackpads.
   let menuTouchY=null, menuLastTime=0, menuVelocity=0, menuDragged=false, menuMomentumFrame=0;
+  let menuWheelTarget=0, menuWheelFrame=0, mouseDragY=null, mouseDragged=false;
+  mainSiteNav.addEventListener('wheel',event=>{
+    if(mainSiteNav.scrollHeight<=mainSiteNav.clientHeight+1) return;
+    event.preventDefault();
+    menuWheelTarget+=event.deltaY;
+    if(menuWheelFrame) return;
+    const animateWheel=()=>{
+      const remaining=menuWheelTarget;
+      const step=remaining*0.28;
+      if(Math.abs(remaining)<0.7){
+        mainSiteNav.scrollTop+=remaining;
+        menuWheelTarget=0;
+        menuWheelFrame=0;
+        return;
+      }
+      mainSiteNav.scrollTop+=step;
+      menuWheelTarget-=step;
+      menuWheelFrame=requestAnimationFrame(animateWheel);
+    };
+    menuWheelFrame=requestAnimationFrame(animateWheel);
+  },{passive:false});
+  mainSiteNav.addEventListener('pointerdown',event=>{
+    if(event.pointerType!=='mouse'||event.button!==0) return;
+    mouseDragY=event.clientY;
+    mouseDragged=false;
+    mainSiteNav.setPointerCapture?.(event.pointerId);
+  });
+  mainSiteNav.addEventListener('pointermove',event=>{
+    if(mouseDragY===null||event.pointerType!=='mouse') return;
+    const delta=mouseDragY-event.clientY;
+    if(Math.abs(delta)>2) mouseDragged=true;
+    if(mouseDragged){
+      mainSiteNav.scrollTop+=delta;
+      mouseDragY=event.clientY;
+      event.preventDefault();
+    }
+  });
+  const endMouseDrag=()=>{if(mouseDragged) menuDragged=true;mouseDragY=null;};
+  mainSiteNav.addEventListener('pointerup',endMouseDrag);
+  mainSiteNav.addEventListener('pointercancel',endMouseDrag);
   const stopMenuMomentum=()=>{
     if(menuMomentumFrame) cancelAnimationFrame(menuMomentumFrame);
     menuMomentumFrame=0;
