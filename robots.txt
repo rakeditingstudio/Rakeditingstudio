@@ -1,17 +1,11 @@
-# Public pages may be crawled by search engines and AI answer/search systems.
+# Allow search crawlers to discover public RAK Editing Studio pages.
 User-agent: *
 Allow: /
 
 User-agent: Googlebot
 Allow: /
 
-User-agent: Google-Extended
-Allow: /
-
 User-agent: Bingbot
-Allow: /
-
-User-agent: GPTBot
 Allow: /
 
 User-agent: OAI-SearchBot
@@ -20,19 +14,24 @@ Allow: /
 User-agent: ChatGPT-User
 Allow: /
 
-User-agent: ClaudeBot
-Allow: /
-
 User-agent: Claude-SearchBot
 Allow: /
 
 User-agent: PerplexityBot
 Allow: /
 
-User-agent: Amazonbot
-Allow: /
+# Search access is separate from model-training access.
+# These training/extended-use crawlers are not needed for search visibility.
+User-agent: GPTBot
+Disallow: /
+
+User-agent: Google-Extended
+Disallow: /
+
+User-agent: ClaudeBot
+Disallow: /
 
 User-agent: Applebot-Extended
-Allow: /
+Disallow: /
 
 Sitemap: https://rakeditingstudio.github.io/Rakeditingstudio/sitemap.xml
