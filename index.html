@@ -98,6 +98,34 @@
 .site-menu-toggle .hamburger-lines{width:20px;height:16px;display:flex;flex-direction:column;justify-content:space-between;align-items:stretch}
 .site-menu-toggle .hamburger-lines i{display:block;width:100%;height:2px;border-radius:3px;background:linear-gradient(90deg,#ffe3a0,#f3bd54);box-shadow:0 0 5px #f3bd5430}
 .site-menu-toggle:hover .hamburger-lines i{background:#fff0c7}
+
+/* Compact, scrollable section menu: never cover the full page */
+.site-menu{
+  width:min(260px,calc(100vw - 32px))!important;
+  max-width:260px!important;
+  max-height:min(56vh,420px)!important;
+  overflow-y:auto!important;
+  overflow-x:hidden!important;
+  overscroll-behavior:contain;
+  -webkit-overflow-scrolling:touch;
+  scrollbar-width:thin;
+  scrollbar-color:#8c672d #17130d;
+  scroll-snap-type:y proximity;
+  padding:7px!important;
+}
+.site-menu a{
+  min-height:44px;
+  display:flex!important;
+  align-items:center;
+  white-space:normal;
+  line-height:1.35;
+  scroll-snap-align:start;
+}
+.site-menu.open{display:flex!important}
+@media(max-width:560px){
+  .site-menu{width:min(250px,calc(100vw - 28px))!important;max-height:52vh!important}
+}
+
 </style>
 </head>
 <body>
@@ -216,17 +244,24 @@ const rakCaptionCopy=document.getElementById('copyRakCaptionPrompt');if(rakCapti
 const siteMenuToggle=document.getElementById('siteMenuToggle');
 const mainSiteNav=document.getElementById('mainSiteNav');
 if(siteMenuToggle&&mainSiteNav){
+  const closeSiteMenu=()=>{
+    mainSiteNav.classList.remove('open');
+    siteMenuToggle.setAttribute('aria-expanded','false');
+    siteMenuToggle.setAttribute('aria-label','Open website sections');
+  };
   siteMenuToggle.addEventListener('click',()=>{
     const isOpen=mainSiteNav.classList.toggle('open');
     siteMenuToggle.setAttribute('aria-expanded',String(isOpen));
     siteMenuToggle.setAttribute('aria-label',isOpen?'Close website sections':'Open website sections');
   });
   mainSiteNav.addEventListener('click',event=>{
-    if(event.target.closest('a')){
-      mainSiteNav.classList.remove('open');
-      siteMenuToggle.setAttribute('aria-expanded','false');
-      siteMenuToggle.setAttribute('aria-label','Open website sections');
-    }
+    if(event.target.closest('a')) closeSiteMenu();
+  });
+  document.addEventListener('click',event=>{
+    if(!mainSiteNav.contains(event.target)&&!siteMenuToggle.contains(event.target)) closeSiteMenu();
+  });
+  document.addEventListener('keydown',event=>{
+    if(event.key==='Escape') closeSiteMenu();
   });
 }
 
