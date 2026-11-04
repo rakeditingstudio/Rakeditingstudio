@@ -123,7 +123,15 @@
 }
 .site-menu.open{display:flex!important}
 @media(max-width:560px){
-  .site-menu{width:min(250px,calc(100vw - 28px))!important;max-height:52vh!important}
+  .site-menu{
+    width:min(250px,calc(100vw - 28px))!important;
+    height:52vh!important;
+    max-height:52vh!important;
+    overflow-y:scroll!important;
+    overflow-x:hidden!important;
+    touch-action:pan-y;
+    -webkit-overflow-scrolling:touch;
+  }
 }
 
 </style>
