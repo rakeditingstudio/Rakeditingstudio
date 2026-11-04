@@ -13,6 +13,7 @@ const moreOptionsPanel = byId("rakMoreOptionsPanel");
 const status = byId("googleAuthStatus");
 const signedInInfo = byId("rakSignedInInfo");
 const signOutButton = byId("googleSignOutBtn");
+let rakAccountLoginMode = false;
 
 function setStatus(message, isError = false) {
   if (!status) return;
@@ -66,11 +67,10 @@ function installAccountUI() {
   const password = byId("rakAccountPassword");
   const submit = byId("rakAccountSubmit");
   const message = byId("rakAccountMessage");
-  let loginMode = false;
 
   byId("rakAccountClose").addEventListener("click", () => panel.classList.add("hidden"));
   window.rakShowSignupPasswordStage = (verifiedEmail) => {
-    loginMode = false;
+    rakAccountLoginMode = false;
     emailInput.readOnly = true;
     byId("rakAccountTitle").textContent = "Create your RAK password";
     byId("rakAccountHelp").textContent = "Google has verified your account. Choose a separate password for RAK Editing Studio.";
@@ -89,7 +89,7 @@ function installAccountUI() {
       message.textContent = "Account service is not ready. Please reload and try again.";
       return;
     }
-    if (loginMode) {
+    if (rakAccountLoginMode) {
       submit.disabled = true;
       message.textContent = "Signing in…";
       try {
@@ -209,7 +209,7 @@ if (!googleButton || !menuToggle || !signOutButton) {
         const panel = byId("rakAccountPanel");
         if (!panel) return;
         panel.classList.remove("hidden");
-        loginMode = true;
+        rakAccountLoginMode = true;
         byId("rakAccountTitle").textContent = "Login to RAK Editing Studio";
         byId("rakAccountHelp").textContent = "Use your verified email and your separate RAK password. You can also use Continue with Google.";
         byId("rakAccountEmail").readOnly = false;
