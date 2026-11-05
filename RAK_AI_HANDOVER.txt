@@ -1,0 +1,93 @@
+RAK EDITING STUDIO — RAK AI HANDOVER
+Prepared from GitHub repository review on 5 November 2026 (IST).
+Repository: https://github.com/rakeditingstudio/Rakeditingstudio
+Live site: https://rakeditingstudio.github.io/Rakeditingstudio/
+Purpose: Give RAK AI an accurate update about recent website work. Treat GitHub main-branch code as verified; treat owner-reported items as unverified unless stated otherwise.
+
+1) VERIFIED RECENT MAIN-BRANCH UPDATES
+
+5 Nov 2026:
+- Added the Google AdSense account meta tag and async AdSense script to index.html.
+- Added ads.txt with the publisher record. This proves the verification code and ads.txt are in the repository, NOT that AdSense approval or earnings are active.
+Commits:
+- https://github.com/rakeditingstudio/Rakeditingstudio/commit/b817ee8652fc44e026cc7846a8c32255764d75ba
+- https://github.com/rakeditingstudio/Rakeditingstudio/commit/fc1171186ecf1cf645138b0c47e4192bac16b80c
+
+4 Nov 2026:
+- Added a Help & Feedback section and a feedback form.
+- The form posts to FormSubmit's AJAX endpoint for the studio support Gmail. The code handles success/failure messages, but real inbox delivery was not tested in this review.
+- Added an order enquiry flow: visitors describe the requested editing work, prepare a WhatsApp message, and choose either of the two configured WhatsApp contacts. Price and delivery time are confirmed directly.
+- Improved Android mobile navigation scrolling, touch-drag and momentum scrolling.
+- Improved desktop dropdown scrolling with mouse wheel/trackpad and mouse drag.
+- Added llms.txt with brand/site information for AI systems.
+- Expanded sitemap.xml to include homepage, prompts.html and video-generator.html.
+- Updated robots.txt to allow search crawlers while disallowing selected model-training/extended-use crawlers.
+Commits:
+- https://github.com/rakeditingstudio/Rakeditingstudio/commit/b5908e13f83e18c548b26b6be76f095e7b7a64ed
+- https://github.com/rakeditingstudio/Rakeditingstudio/commit/6d0277139b295dcfb923e46c660ed114987ef132
+- https://github.com/rakeditingstudio/Rakeditingstudio/commit/e91fe529a235f1e7613134886f7700a82fd026f2
+- https://github.com/rakeditingstudio/Rakeditingstudio/commit/d8372de282e1cf4a706aaab3a2339c8978a959b4
+- https://github.com/rakeditingstudio/Rakeditingstudio/commit/492f22068ec29c1d637330aa136467c2ab4817e7
+- https://github.com/rakeditingstudio/Rakeditingstudio/commit/4816f06734ca7486ea4ea047d12ec1f0cb8516e9
+- https://github.com/rakeditingstudio/Rakeditingstudio/commit/93d3cb4c8b4797adcd7566a8a89479e8bd365467
+- https://github.com/rakeditingstudio/Rakeditingstudio/commit/67ed48e6953895b8426ee5fe016736c1a07fca1b
+- https://github.com/rakeditingstudio/Rakeditingstudio/commit/46811affbe39dd5807c7dd17e97ca0fb599d8ec4
+- https://github.com/rakeditingstudio/Rakeditingstudio/commit/22c7a01243c170f9e4e3b515f661eaa427fb41e4
+
+2) CURRENT WEBSITE FEATURES CONFIRMED IN CODE
+- Royal Black & Gold RAK Editing Studio branding; main areas include Tools & Apps, New Creator Guide, Videos, Photos, AI Studio, Durga Maa, AI Prompts, Viral Prompts, RAK AI, Order Help, Help & Feedback and Video Generator.
+- Separate pages: prompts.html and video-generator.html.
+- Video Generator page embeds a third-party public demo. The site itself does not provide its own video-generation backend; external provider availability/queue controls the demo.
+- Prompt makers generate/copy text prompts; do not claim they create finished video or images.
+- Order enquiry prepares a WhatsApp message; it does not prove an order has been paid or accepted.
+- Admin area is a local-browser/demo feature, not a secure shared admin dashboard. Do not describe it as secure or synced across visitors.
+
+3) LOGIN STATUS
+- Google login PR #7 is merged into main: https://github.com/rakeditingstudio/Rakeditingstudio/pull/7
+- Current code uses Supabase Auth, Google OAuth, account name/email/avatar display, sign-out, and a separate RAK password flow after Google verification.
+- Supabase project URL is configured in supabase-config.js. The browser file contains a publishable key only; never request or expose service-role keys or OAuth client secrets.
+- The profile menu currently shows GitHub Login and Facebook Login as disabled “Coming soon” controls. No working GitHub or Facebook OAuth login is verified.
+- Draft PR #1 (customer accounts, premium prompts, orders, visits and owner analytics) is still open and unmerged: https://github.com/rakeditingstudio/Rakeditingstudio/pull/1
+- Draft PR #2 (Cloudflare Worker prompt-string syntax fix) is still open and unmerged: https://github.com/rakeditingstudio/Rakeditingstudio/pull/2
+- Do not claim customer analytics dashboard, premium entitlements or shared order history are live based on PR #1; it is draft-only.
+
+4) RAK AI / CLOUDFLARE TECHNICAL STATUS FROM REPOSITORY
+- Main site floating assistant calls https://rak-ai.royalaashishking.workers.dev/api/chat.
+- Worker source is tracked as cloudflare-worker.js.
+- Worker source contains routes for /api/chat, /api/image and /api/live-token.
+- Chat is configured to try Gemini models with fallback names; image route calls Gemini 2.5 Flash Image; live-token route requests a Gemini Live ephemeral token.
+- These code paths being present does NOT prove the current production Worker, model access, quota, image generation or live call is working. Ask for the exact displayed error and test each route before claiming success.
+- Worker expects a Cloudflare secret named GEMINI_API_KEY. Never ask the owner to paste it into chat or commit it to GitHub.
+- Floating RAK AI widget supports up to 3 attachments and its current frontend/Worker source accepts a combined total up to 40 MB. The widget's reset/status label incorrectly changes to “max 4 MB” after sending; correct that label. The separate embedded RAK AI chat inside index.html still has a 4 MB frontend attachment cap. Do not confuse these two interfaces.
+- Draft PR #2 is a syntax fix for a Worker prompt string and has a successful preview build/deployment comment, but it remains draft/unmerged. Do not assume production main includes that fix.
+- Keep Cloudflare Worker deployment/service settings and secrets private; code repository access does not grant access to Cloudflare dashboard secrets.
+
+5) SEO / ADSENSE STATUS
+- index.html includes canonical URL, meta description, Open Graph/Twitter image metadata, JSON-LD Website/Organization/Person structured data and Google Search Console verification meta tag.
+- robots.txt and sitemap.xml are updated in main; llms.txt is present.
+- AdSense script and ads.txt are present in main. Owner previously reported AdSense status as “Requires review / Not found”. Treat approval and monetization as NOT confirmed; never claim earnings have started.
+- Search Console indexing/sitemap acceptance must be checked in Search Console; GitHub commits alone do not prove indexing or ranking.
+
+6) KNOWN OWNER-REPORTED CONTEXT — NOT VERIFIED FROM CODE
+- Owner reported recent changes to WhatsApp contact lock/order flow and wants a live visitor/unique visitor dashboard.
+- Owner previously saw 5 registered Supabase users; that is an account count, not total website visitors.
+- Owner wants the RAK AI knowledge to stay synchronized with website changes.
+- Facebook Login setup was only being explored in Meta Developers; no completed Facebook OAuth setup is confirmed.
+
+7) PRIORITY FOLLOW-UP CHECKLIST
+1. Test the live website on Android and desktop after deployment.
+2. Test feedback form delivery to the support inbox; do not assume success based only on the front-end success message.
+3. Test Google login, logout and account/password flow using a test account.
+4. Decide whether to continue PR #1 and complete Supabase schema, RLS, owner allow-list and security tests before merging.
+5. Fix the floating widget's incorrect 4 MB reset label; keep its 40 MB limit aligned with Worker code. Decide whether the embedded chat should also move from 4 MB to 40 MB, and test memory/request limits before changing it.
+6. Resolve PR #2 safely: verify the Worker build and endpoint tests, then merge only after checks pass.
+7. Test /api/chat, /api/image and /api/live-token on the actual production Worker; check model names, API access and quota.
+8. Continue Facebook OAuth only after creating/configuring the Meta app and Supabase provider. GitHub/Facebook buttons must remain marked “Coming soon” until tested.
+9. Verify AdSense review status and Search Console indexing separately.
+10. Update RAK AI's system knowledge whenever confirmed website changes ship.
+
+IMPORTANT FOR RAK AI:
+- Be honest about what is live, draft, planned, or untested.
+- Never claim a payment, subscription, visitor dashboard, private admin system, video generation, or social login works unless verified.
+- Never request passwords, OTPs, API keys, service-role keys, OAuth secrets, payment credentials or bank details.
+- Use Hindi/Hinglish when the owner does.
