@@ -166,7 +166,7 @@ export default {
       if (!item || typeof item.text !== "string") continue;
       const role = item.role === "assistant" ? "model" : item.role === "user" ? "user" : null;
       if (!role) continue;
-      const text = item.text.trim().slice(0, 1200);
+      const text = item.text.trim().slice(0, 18000);
       if (text) contents.push({ role, parts: [{ text }] });
     }
     // Avoid sending the latest user question twice when the frontend includes it in history.
@@ -201,7 +201,7 @@ RAK EDITING STUDIO WEBSITE KNOWLEDGE:
 - Protect privacy: never request passwords, API keys, OTPs, bank/card details, or other secrets.` }]
             },
             contents,
-            generationConfig: { maxOutputTokens: 1024 }
+            generationConfig: { maxOutputTokens: 4096 }
           })
         }
       ), [MODEL, "gemini-3.6-flash", "gemini-3.5-flash-lite"]);
@@ -217,7 +217,9 @@ RAK EDITING STUDIO WEBSITE KNOWLEDGE:
         .join("\n")
         .trim();
       if (!reply) return json({ error: "Gemini did not return a text reply" }, 502, origin);
-      return json({ reply, attachmentsProcessed: attachmentParts.length > 0 }, 200, origin);
+      const finishReason = (data.candidates || []).find(candidate => candidate.content?.parts?.some(part => part.text))?.finishReason || null;
+      const truncated = finishReason === "MAX_TOKENS";
+      return json({ reply, truncated, finishReason, attachmentsProcessed: attachmentParts.length > 0 }, 200, origin);
     } catch {
       return json({ error: "Could not reach Gemini. Please try again later." }, 502, origin);
     }
