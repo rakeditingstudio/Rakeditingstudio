@@ -18,6 +18,7 @@ button,a,select{display:inline-block;border:1px solid #765b2a;border-radius:9px;
 .bar-track{height:12px;background:#292929;border-radius:20px;overflow:hidden}.bar-fill{height:100%;background:linear-gradient(90deg,#9d6c22,var(--gold));border-radius:20px}
 .page-row{display:flex;justify-content:space-between;gap:12px;padding:9px 0;border-bottom:1px solid #303030;font-size:13px;overflow-wrap:anywhere}
 .controls{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:12px}
+.live-list{display:grid;gap:8px}.live-row{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:10px;border:1px solid #303030;border-radius:10px;background:#101010}.live-main{min-width:0}.live-main strong{display:block;color:var(--gold);overflow-wrap:anywhere}.live-meta{font-size:12px;color:#aaa}.live-dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:#42d392;margin-right:7px;box-shadow:0 0 9px #42d392}
 @media(max-width:650px){.panels{grid-template-columns:1fr}body{padding:12px}.head,.tile,.panel{padding:14px}}
 .user-line{display:flex;align-items:center;gap:10px;min-width:180px}.user-avatar{position:relative;width:40px;height:40px;flex:0 0 40px;border-radius:50%;display:grid;place-items:center;overflow:hidden;background:#3a2b13;color:#f3bd54;font-weight:bold;border:1px solid #765b2a}.user-avatar>span{position:relative;z-index:1}.user-avatar img{position:absolute;inset:0;z-index:2;display:block;width:100%;height:100%;border-radius:50%;object-fit:cover;background:#3a2b13}
 </style>
@@ -35,6 +36,14 @@ button,a,select{display:inline-block;border:1px solid #765b2a;border-radius:9px;
 <button id="enableNotifications" type="button" hidden>Enable screen notifications</button>
 <a href="./">Back to website</a>
 </div>
+</section>
+<section class="panel" style="margin-top:14px">
+  <div class="controls" style="justify-content:space-between;margin-top:0">
+    <div><h2 style="margin-bottom:4px">Live Visitors · Instant</h2><p class="small" style="margin:0">Realtime connection · anonymous browser sessions</p></div>
+    <strong id="liveCount" style="font-size:30px;color:#42d392">—</strong>
+  </div>
+  <p id="liveConnection" class="small" aria-live="polite">Connecting to live presence…</p>
+  <div id="liveVisitors" class="live-list"><p class="muted">Waiting for live visitors…</p></div>
 </section>
 <section id="celebration" class="panel" role="status" aria-live="polite" hidden style="margin-top:14px;border-color:#765b2a;color:#f3bd54">🎉 A new visit has been recorded on RAK Editing Studio!</section>
 <section id="metrics" class="grid" aria-live="polite"></section>
@@ -68,8 +77,38 @@ const supabase=createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY,{auth:{persist
 const number=value=>Number(value||0).toLocaleString();
 let previousTotalViews=null;
 let isFirstLoad=true;
-let pollHandle=null;
-function celebrateNewVisits(delta){
+let pollHandle=null;\nlet liveChannel=null;
+
+function renderLiveVisitors(state){
+  const sessions=Object.values(state||{}).flat().filter(item=>item&&item.visitor_id);
+  const unique=new Map();
+  sessions.forEach(item=>unique.set(item.visitor_id,item));
+  const visitors=[...unique.values()];
+  $("liveCount").textContent=number(visitors.length);
+  if(!visitors.length){
+    $("liveVisitors").innerHTML='<p class="muted">Abhi koi visitor online nahi hai.</p>';
+    return;
+  }
+  $("liveVisitors").innerHTML=visitors.map(item=>{
+    const id=String(item.visitor_id||"").slice(0,8);
+    const page=escapeHtml(item.page_path||"/");
+    const device=escapeHtml(item.device_type||"unknown");
+    return '<div class="live-row"><div class="live-main"><strong><span class="live-dot"></span>Visitor '+escapeHtml(id)+'</strong><div class="live-meta">Feature/page: '+page+'</div></div><span class="live-meta">'+device+'</span></div>';
+  }).join("");
+}
+function connectLiveVisitors(){
+  if(liveChannel)return;
+  liveChannel=supabase.channel("rak-live-visitors",{config:{presence:{key:"rak-owner-dashboard"}}});
+  liveChannel.on("presence",{event:"sync"},()=>renderLiveVisitors(liveChannel.presenceState()));
+  liveChannel.subscribe(status=>{
+    $("liveConnection").textContent=status==="SUBSCRIBED"
+      ?"Connected · visitor activity updates automatically"
+      :"Live connection: "+status;
+    if(status==="SUBSCRIBED")renderLiveVisitors(liveChannel.presenceState());
+  });
+  window.addEventListener("pagehide",()=>{if(liveChannel)supabase.removeChannel(liveChannel);},{once:true});
+}
+\nfunction celebrateNewVisits(delta){
   if(delta<=0)return;
   const message=delta===1
     ?"🎉 Someone new visited RAK Editing Studio!"
@@ -164,7 +203,7 @@ async function load(){
   else $("pages").innerHTML='<p class="muted">No page data recorded yet.</p>';
   const devices=stats.active_devices||{};
   $("devices").innerHTML=["mobile","desktop","tablet","unknown"].map(k=>'<div class="page-row"><span>'+k.charAt(0).toUpperCase()+k.slice(1)+'</span><b>'+number(devices[k])+'</b></div>').join("");
-  $("status").textContent="Owner access verified. Statistics updated.";
+  $("status").textContent="Owner access verified. Statistics updated.";\n  connectLiveVisitors();
   $("refresh").hidden=false;
   $("enableNotifications").hidden=!("Notification" in window);
 }
