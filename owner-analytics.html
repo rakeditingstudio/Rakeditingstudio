@@ -37,6 +37,21 @@ button,a,select{display:inline-block;border:1px solid #765b2a;border-radius:9px;
 </section>
 <section id="celebration" class="panel" role="status" aria-live="polite" hidden style="margin-top:14px;border-color:#765b2a;color:#f3bd54">🎉 A new visit has been recorded on RAK Editing Studio!</section>
 <section id="metrics" class="grid" aria-live="polite"></section>
+<section class="panel" style="margin-top:14px">
+  <div class="controls" style="justify-content:space-between;margin-top:0">
+    <div><h2 style="margin-bottom:4px">Registered Users</h2><p class="small" style="margin:0">Private account directory · owner access only</p></div>
+    <button id="loadUsers" type="button">View registered users</button>
+  </div>
+  <p id="usersStatus" class="muted" aria-live="polite">User details load only when you request them.</p>
+  <div id="usersTableWrap" style="overflow-x:auto" hidden>
+    <table style="width:100%;border-collapse:collapse;min-width:680px;font-size:13px">
+      <thead><tr style="color:#f3bd54;text-align:left;border-bottom:1px solid #383838">
+        <th style="padding:10px">User</th><th style="padding:10px">Email</th><th style="padding:10px">Login method</th><th style="padding:10px">Joined</th><th style="padding:10px">Last login</th>
+      </tr></thead>
+      <tbody id="usersRows"></tbody>
+    </table>
+  </div>
+</section>
 <div class="panels">
 <section class="panel"><h2>Daily page views</h2><div id="daily" class="muted">Waiting for data…</div></section>
 <section class="panel"><h2>Popular pages</h2><div id="pages" class="muted">Waiting for data…</div></section>
@@ -65,6 +80,45 @@ function celebrateNewVisits(delta){
   }
 }
 
+function escapeHtml(value){
+  return String(value??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+}
+function formatDate(value){
+  if(!value)return "Not recorded";
+  const date=new Date(value);
+  return Number.isNaN(date.getTime())?"Not recorded":date.toLocaleString();
+}
+async function loadUsers(){
+  $("loadUsers").disabled=true;
+  $("usersStatus").textContent="Loading registered accounts securely…";
+  try{
+    const {data,error}=await supabase.rpc("get_studio_registered_users");
+    if(error)throw error;
+    const users=Array.isArray(data)?data:[];
+    $("usersRows").innerHTML=users.map(user=>{
+      const providers=Array.isArray(user.providers)?user.providers:[];
+      const method=providers.length?providers.map(p=>String(p).replace(/[^a-z0-9_-]/gi,"")).join(", "):"Not available";
+      const displayName=user.display_name||"RAK user";
+      return '<tr style="border-bottom:1px solid #303030">'+
+        '<td style="padding:10px"><strong>'+escapeHtml(displayName)+'</strong><div class="small">'+escapeHtml(user.user_id)+'</div></td>'+
+        '<td style="padding:10px">'+escapeHtml(user.email||"Not available")+'</td>'+
+        '<td style="padding:10px">'+escapeHtml(method)+'</td>'+
+        '<td style="padding:10px">'+escapeHtml(formatDate(user.created_at))+'</td>'+
+        '<td style="padding:10px">'+escapeHtml(formatDate(user.last_sign_in_at))+'</td></tr>';
+    }).join("");
+    $("usersTableWrap").hidden=false;
+    $("usersStatus").textContent=users.length
+      ? users.length+" registered account(s) found."
+      : "No registered accounts found.";
+    $("loadUsers").textContent="Refresh users";
+  }catch(error){
+    $("usersStatus").textContent=error?.message?.includes("get_studio_registered_users")
+      ?"Users feature needs its Supabase SQL setup. Run supabase/owner-registered-users.sql in SQL Editor."
+      :"Could not load users. Check the SQL setup and owner access, then try again.";
+  }finally{
+    $("loadUsers").disabled=false;
+  }
+}
 function renderBars(target,rows,labelKey,valueKey){
   if(!rows?.length){$(target).innerHTML='<p class="muted">No data recorded yet.</p>';return;}
   const max=Math.max(1,...rows.map(r=>Number(r[valueKey]||0)));
@@ -105,6 +159,7 @@ async function load(){
   $("enableNotifications").hidden=!("Notification" in window);
 }
 $("refresh").addEventListener("click",load);
+$("loadUsers").addEventListener("click",loadUsers);
 $("enableNotifications").addEventListener("click",async()=>{
   if(!("Notification" in window)){ $("status").textContent="This browser does not support screen notifications."; return; }
   const permission=await Notification.requestPermission();
