@@ -26,6 +26,12 @@ begin
           nullif(u.raw_user_meta_data->>'display_name',''),
           ''
         ),
+        'avatar_url', coalesce(
+          nullif(u.raw_user_meta_data->>'avatar_url',''),
+          nullif(u.raw_user_meta_data->>'picture',''),
+          nullif(u.raw_user_meta_data->>'photo_url',''),
+          ''
+        ),
         'created_at', u.created_at,
         'last_sign_in_at', u.last_sign_in_at,
         'providers', coalesce(u.raw_app_meta_data->'providers', '[]'::jsonb)
