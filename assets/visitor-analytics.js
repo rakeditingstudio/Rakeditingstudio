@@ -10,7 +10,15 @@ if (validConfig) {
     const supabase = createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
     let visitorId = localStorage.getItem("rakVisitorIdV1");
     if (!visitorId) {
-      visitorId = crypto.randomUUID();
+      if (crypto.randomUUID) visitorId = crypto.randomUUID();
+      else {
+        const bytes = new Uint8Array(16);
+        crypto.getRandomValues(bytes);
+        bytes[6] = (bytes[6] & 0x0f) | 0x40;
+        bytes[8] = (bytes[8] & 0x3f) | 0x80;
+        const hex = Array.from(bytes, value => value.toString(16).padStart(2, "0")).join("");
+        visitorId = hex.slice(0,8)+"-"+hex.slice(8,12)+"-"+hex.slice(12,16)+"-"+hex.slice(16,20)+"-"+hex.slice(20);
+      }
       localStorage.setItem("rakVisitorIdV1", visitorId);
     }
 
@@ -35,12 +43,15 @@ if (validConfig) {
     const liveChannel = supabase.channel("rak-live-visitors", {
       config: { presence: { key: visitorId } }
     });
-    const trackPresence = () => liveChannel.track({
+    const trackPresence = () => {
+      if (getPagePath().endsWith("/owner-analytics.html")) return Promise.resolve();
+      return liveChannel.track({
       visitor_id: visitorId,
       page_path: getPagePath(),
       device_type: deviceType,
       last_seen_at: new Date().toISOString()
-    });
+      });
+    };
 
     recordVisit();
     heartbeat();
