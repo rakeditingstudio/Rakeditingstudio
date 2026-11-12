@@ -77,7 +77,8 @@ const supabase=createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY,{auth:{persist
 const number=value=>Number(value||0).toLocaleString();
 let previousTotalViews=null;
 let isFirstLoad=true;
-let pollHandle=null;\nlet liveChannel=null;
+let pollHandle=null;
+let liveChannel=null;
 
 function renderLiveVisitors(state){
   const sessions=Object.values(state||{}).flat().filter(item=>item&&item.visitor_id);
@@ -108,7 +109,8 @@ function connectLiveVisitors(){
   });
   window.addEventListener("pagehide",()=>{if(liveChannel)supabase.removeChannel(liveChannel);},{once:true});
 }
-\nfunction celebrateNewVisits(delta){
+
+function celebrateNewVisits(delta){
   if(delta<=0)return;
   const message=delta===1
     ?"🎉 Someone new visited RAK Editing Studio!"
@@ -203,7 +205,8 @@ async function load(){
   else $("pages").innerHTML='<p class="muted">No page data recorded yet.</p>';
   const devices=stats.active_devices||{};
   $("devices").innerHTML=["mobile","desktop","tablet","unknown"].map(k=>'<div class="page-row"><span>'+k.charAt(0).toUpperCase()+k.slice(1)+'</span><b>'+number(devices[k])+'</b></div>').join("");
-  $("status").textContent="Owner access verified. Statistics updated.";\n  connectLiveVisitors();
+  $("status").textContent="Owner access verified. Statistics updated.";
+  connectLiveVisitors();
   $("refresh").hidden=false;
   $("enableNotifications").hidden=!("Notification" in window);
 }
