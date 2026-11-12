@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#080808">
+<title>Owner Analytics | RAK Editing Studio</title>
+<link rel="icon" href="assets/rak-logo-64.png">
+<style>
+:root{color-scheme:dark;--gold:#f3bd54;--bg:#080808;--panel:#141414;--line:#383838}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:#f7f7f7;font:16px/1.55 Arial,sans-serif;padding:24px}
+main{width:min(900px,100%);margin:30px auto}.head,.tile{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:20px}
+h1,h2{color:var(--gold)}.muted{color:#aaa}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px;margin:18px 0}
+.tile strong{display:block;font-size:30px;color:var(--gold)}.tile span{font-size:13px;color:#bbb}
+button,a{display:inline-block;border:1px solid #765b2a;border-radius:9px;padding:10px 14px;background:#20190e;color:#f3bd54;text-decoration:none;font-weight:bold;cursor:pointer}
+#status{color:#f3d08a;min-height:24px}.small{font-size:12px;color:#999}
+</style>
+</head>
+<body><main>
+<section class="head">
+<p class="muted">RAK EDITING STUDIO · PRIVATE OWNER AREA</p>
+<h1>Visitor Analytics</h1>
+<p class="muted">Basic visit totals and account sign-in activity. Anonymous visitors are counted with a random browser ID; no IP addresses or device fingerprints are collected.</p>
+<p id="status">Checking your RAK account…</p>
+<button id="refresh" type="button" hidden>Refresh statistics</button>
+<a href="./">Back to website</a>
+</section>
+<section id="metrics" class="grid" aria-live="polite"></section>
+<p class="small">Counts are approximate. A browser/profile is counted separately, and repeat page views on the same day are deduplicated per page. This page does not show visitor names or live presence.</p>
+</main>
+<script type="module">
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY } from "./supabase-config.js";
+const $=id=>document.getElementById(id);
+const supabase=createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
+async function load(){
+  $("status").textContent="Loading private statistics…";
+  const {data:{session}}=await supabase.auth.getSession();
+  if(!session?.user){location.replace("signin.html?returnTo=%2Fowner-analytics.html");return;}
+  const {data:isAdmin,error:adminError}=await supabase.rpc("is_studio_admin");
+  if(adminError||isAdmin!==true){$("status").textContent="Access denied. This Google/RAK account is not on the studio owner allow-list.";return;}
+  const {data,error}=await supabase.rpc("get_visitor_dashboard_stats");
+  if(error){$("status").textContent="Analytics database setup is incomplete. Run the migration from supabase/visitor-analytics.sql.";return;}
+  const stats=Array.isArray(data)?data[0]:data;
+  const items=[
+    ["Total page views",stats.page_views_total],
+    ["Page views · last 30 days",stats.page_views_30d],
+    ["Approx. unique visitors · 30 days",stats.unique_visitors_30d],
+    ["Registered accounts",stats.registered_accounts],
+    ["Login events · last 30 days",stats.login_events_30d],
+    ["Accounts logged in · 30 days",stats.logged_in_accounts_30d]
+  ];
+  $("metrics").innerHTML=items.map(([label,value])=>'<div class="tile"><strong>'+Number(value||0).toLocaleString()+'</strong><span>'+label+'</span></div>').join("");
+  $("status").textContent="Owner access verified. Statistics updated.";
+  $("refresh").hidden=false;
+}
+$("refresh").addEventListener("click",load);
+load().catch(()=>{$("status").textContent="Could not load analytics. Please reload and try again.";});
+</script>
+</body></html>
