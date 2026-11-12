@@ -10,12 +10,10 @@ if (validConfig) {
     const supabase = createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
     let visitorId = localStorage.getItem("rakVisitorIdV1");
     if (!visitorId) {
-      if (crypto.randomUUID) {
-        visitorId = crypto.randomUUID();
-      } else {
+      if (crypto.randomUUID) visitorId = crypto.randomUUID();
+      else {
         const bytes = new Uint8Array(16);
-        if (crypto.getRandomValues) crypto.getRandomValues(bytes);
-        else for (let i = 0; i < bytes.length; i++) bytes[i] = Math.floor(Math.random() * 256);
+        crypto.getRandomValues(bytes);
         bytes[6] = (bytes[6] & 0x0f) | 0x40;
         bytes[8] = (bytes[8] & 0x3f) | 0x80;
         const hex = Array.from(bytes, value => value.toString(16).padStart(2, "0")).join("");
@@ -23,21 +21,31 @@ if (validConfig) {
       }
       localStorage.setItem("rakVisitorIdV1", visitorId);
     }
+
     const pagePath = location.pathname || "/";
-    supabase.rpc("record_site_visit", {
+    const deviceType = /tablet|ipad/i.test(navigator.userAgent) ? "tablet" :
+      /mobile|android|iphone|ipod/i.test(navigator.userAgent) ? "mobile" : "desktop";
+
+    const recordVisit = () => supabase.rpc("record_site_visit", {
       p_visitor_id: visitorId,
       p_page_path: pagePath
-    }).then(({ error }) => {
-      if (error) console.info("RAK visitor analytics is awaiting database setup.");
     });
+    const heartbeat = () => supabase.rpc("record_visitor_presence", {
+      p_visitor_id: visitorId,
+      p_page_path: pagePath,
+      p_device_type: deviceType
+    });
+
+    recordVisit();
+    heartbeat();
+    const presenceTimer = window.setInterval(heartbeat, 30000);
+    window.addEventListener("pagehide", () => window.clearInterval(presenceTimer), { once: true });
 
     supabase.auth.onAuthStateChange((event, session) => {
       if (event === "SIGNED_IN" && session?.user) {
         queueMicrotask(() => supabase.rpc("record_login_event"));
-        queueMicrotask(() => supabase.rpc("record_site_visit", {
-          p_visitor_id: visitorId,
-          p_page_path: pagePath
-        }));
+        queueMicrotask(recordVisit);
+        queueMicrotask(heartbeat);
       }
     });
   } catch (error) {
