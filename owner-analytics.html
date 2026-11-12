@@ -31,9 +31,11 @@ button,a,select{display:inline-block;border:1px solid #765b2a;border-radius:9px;
 <label for="range" class="small">Report range</label>
 <select id="range"><option value="7">Last 7 days</option><option value="14" selected>Last 14 days</option><option value="30">Last 30 days</option></select>
 <button id="refresh" type="button" hidden>Refresh statistics</button>
+<button id="enableNotifications" type="button" hidden>Enable screen notifications</button>
 <a href="./">Back to website</a>
 </div>
 </section>
+<section id="celebration" class="panel" role="status" aria-live="polite" hidden style="margin-top:14px;border-color:#765b2a;color:#f3bd54">🎉 A new visit has been recorded on RAK Editing Studio!</section>
 <section id="metrics" class="grid" aria-live="polite"></section>
 <div class="panels">
 <section class="panel"><h2>Daily page views</h2><div id="daily" class="muted">Waiting for data…</div></section>
@@ -48,6 +50,21 @@ import { SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY } from "./supabase-config.js";
 const $=id=>document.getElementById(id);
 const supabase=createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
 const number=value=>Number(value||0).toLocaleString();
+let previousTotalViews=null;
+let isFirstLoad=true;
+let pollHandle=null;
+function celebrateNewVisits(delta){
+  if(delta<=0)return;
+  const message=delta===1
+    ?"🎉 Someone new visited RAK Editing Studio!"
+    :"🎉 "+number(delta)+" new page visits were recorded on RAK Editing Studio!";
+  $("celebration").textContent=message;
+  $("celebration").hidden=false;
+  if("Notification" in window && Notification.permission==="granted"){
+    try { new Notification("RAK Editing Studio", {body:message, icon:"assets/rak-logo-192.png"}); } catch {}
+  }
+}
+
 function renderBars(target,rows,labelKey,valueKey){
   if(!rows?.length){$(target).innerHTML='<p class="muted">No data recorded yet.</p>';return;}
   const max=Math.max(1,...rows.map(r=>Number(r[valueKey]||0)));
@@ -63,6 +80,12 @@ async function load(){
   const {data,error}=await supabase.rpc("get_visitor_dashboard_stats",{p_days:days});
   if(error){$("status").textContent="Dashboard update required. Run supabase/visitor-analytics-live.sql in Supabase SQL Editor.";return;}
   const stats=Array.isArray(data)?data[0]:data;
+  const currentTotal=Number(stats.page_views_total||0);
+  if(!isFirstLoad && previousTotalViews!==null && currentTotal>previousTotalViews){
+    celebrateNewVisits(currentTotal-previousTotalViews);
+  }
+  previousTotalViews=currentTotal;
+  isFirstLoad=false;
   const items=[
     ["Live visitors · last 90 sec",stats.active_visitors],
     ["Page views · selected range",stats.page_views_range],
@@ -79,10 +102,21 @@ async function load(){
   $("devices").innerHTML=["mobile","desktop","tablet","unknown"].map(k=>'<div class="page-row"><span>'+k.charAt(0).toUpperCase()+k.slice(1)+'</span><b>'+number(devices[k])+'</b></div>').join("");
   $("status").textContent="Owner access verified. Statistics updated.";
   $("refresh").hidden=false;
+  $("enableNotifications").hidden=!("Notification" in window);
 }
 $("refresh").addEventListener("click",load);
+$("enableNotifications").addEventListener("click",async()=>{
+  if(!("Notification" in window)){ $("status").textContent="This browser does not support screen notifications."; return; }
+  const permission=await Notification.requestPermission();
+  $("status").textContent=permission==="granted"
+    ?"Screen notifications enabled while this dashboard is open."
+    :"Screen notifications were not enabled. You can change this in browser site settings.";
+  $("enableNotifications").hidden=permission==="granted";
+});
 $("range").addEventListener("change",load);
 load().catch(()=>{$("status").textContent="Could not load analytics. Please reload and try again.";});
+pollHandle=window.setInterval(()=>load().catch(()=>{}),30000);
+window.addEventListener("pagehide",()=>{if(pollHandle)window.clearInterval(pollHandle);},{once:true});
 </script>
 <script type="module" src="assets/visitor-analytics.js?v=20261113"></script>
 </body></html>
