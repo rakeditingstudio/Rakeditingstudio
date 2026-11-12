@@ -6,6 +6,9 @@ create table if not exists public.studio_admins (
   created_at timestamptz not null default now()
 );
 
+alter table public.studio_admins enable row level security;
+revoke all on table public.studio_admins from anon, authenticated;
+
 create or replace function public.is_studio_admin()
 returns boolean language sql stable security definer
 set search_path = public, pg_temp
