@@ -1,10 +1,6 @@
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
-import { SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY } from "../supabase-config.js";
+import { getSupabaseClient } from "../supabase-client.js";
 
-const supabase = window.rakSupabase || createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, {
-  auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true }
-});
-if (!window.rakSupabase) window.rakSupabase = supabase;
+const supabase = getSupabaseClient();
 
 let user = null;
 let enabled = false;
