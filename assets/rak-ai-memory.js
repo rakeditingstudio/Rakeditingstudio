@@ -152,7 +152,7 @@ function renderAll() {
     p.field.disabled = !user;
     p.status.textContent = !user ? "Login to enable private chat history and personalization."
       : enabled ? "Personalization is ON. RAK AI can use your saved text chats."
-      : "Personalization is OFF. Nothing is saved until you switch it on.";
+      : "Personalization is OFF. Chat history is not saved; a custom memory note is saved only when you press Save memory.";
   }
 }
 
