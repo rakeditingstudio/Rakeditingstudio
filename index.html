@@ -473,9 +473,19 @@ el('year').textContent=new Date().getFullYear();render();
 </script>
 <script type="module" src="account.js?v=20261113-shared-client1"></script>
 <script src="assets/rak-ai-assistant.js?v=20261113-memory1" defer></script>
-<script type="module" src="assets/rak-ai-memory.js?v=20261113-shared-client1"></script>
-
-<script type="module" src="assets/visitor-analytics.js?v=20261113-shared-client1"></script>
+<script type="module">
+  // Keep non-essential Supabase features out of the initial page-load path.
+  // Account sign-in remains available immediately; memory and visitor analytics
+  // start only after the page has fully loaded.
+  window.addEventListener("load", () => {
+    window.setTimeout(() => {
+      import("./assets/rak-ai-memory.js?v=20261113-lazy1")
+        .catch(error => console.warn("RAK AI memory could not start.", error));
+      import("./assets/visitor-analytics.js?v=20261113-lazy1")
+        .catch(error => console.warn("Visitor analytics could not start.", error));
+    }, 800);
+  }, { once: true });
+</script>
 <script type="module">
 import { SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, getSupabaseClient } from "./supabase-client.js";
 const ownerLink = document.getElementById("ownerAnalyticsMenuLink");
