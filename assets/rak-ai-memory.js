@@ -58,6 +58,7 @@ async function saveSummary(value) {
 }
 
 async function getContext() {
+  await window.rakAIMemory?.ready;
   if (!user || !enabled) return "";
   const { data, error } = await supabase.from("rak_ai_chat_messages")
     .select("role,content,created_at").eq("user_id", user.id)
