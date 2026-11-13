@@ -477,11 +477,10 @@ el('year').textContent=new Date().getFullYear();render();
 
 <script type="module" src="assets/visitor-analytics.js?v=20261113-realtime1"></script>
 <script type="module">
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
-import { SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY } from "./supabase-config.js";
+import { SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, getSupabaseClient } from "./supabase-client.js";
 const ownerLink = document.getElementById("ownerAnalyticsMenuLink");
 if (ownerLink && SUPABASE_URL && SUPABASE_PUBLISHABLE_KEY) {
-  const supabase = createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
+  const supabase = getSupabaseClient();
   const updateOwnerMenu = async (session) => {
     ownerLink.hidden = true;
     if (!session?.user) return;
