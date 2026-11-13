@@ -2,5 +2,6 @@
   "$schema": "https://developers.cloudflare.com/schemas/wrangler.json",
   "name": "rak-ai",
   "main": "./cloudflare-worker.js",
-  "compatibility_date": "2026-10-11"
+  "compatibility_date": "2026-10-11",
+  "previews": {}
 }
