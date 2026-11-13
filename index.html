@@ -471,38 +471,37 @@ if(copySupportEmail) copySupportEmail.addEventListener('click',async()=>{
 });
 el('year').textContent=new Date().getFullYear();render();
 </script>
-<script type="module" src="account.js?v=20261113-shared-client1"></script>
+
 <script src="assets/rak-ai-assistant.js?v=20261113-memory1" defer></script>
-<script type="module">
-  // Keep non-essential Supabase features out of the initial page-load path.
-  // Account sign-in remains available immediately; memory and visitor analytics
-  // start only after the page has fully loaded.
+<script>
+  // Start Supabase-backed features only after the document has finished loading.
+  // Dynamic imports keep slow auth/network requests from holding the browser's load state.
   window.addEventListener("load", () => {
     window.setTimeout(() => {
-      import("./assets/rak-ai-memory.js?v=20261113-lazy1")
+      import("./account.js?v=20261113-postload1")
+        .catch(error => console.warn("RAK account could not start.", error));
+      import("./assets/rak-ai-memory.js?v=20261113-postload1")
         .catch(error => console.warn("RAK AI memory could not start.", error));
-      import("./assets/visitor-analytics.js?v=20261113-lazy1")
+      import("./assets/visitor-analytics.js?v=20261113-postload1")
         .catch(error => console.warn("Visitor analytics could not start.", error));
+      import("./supabase-client.js").then(async ({ SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, getSupabaseClient }) => {
+        const ownerLink = document.getElementById("ownerAnalyticsMenuLink");
+        if (!ownerLink || !SUPABASE_URL || !SUPABASE_PUBLISHABLE_KEY) return;
+        const supabase = getSupabaseClient();
+        const updateOwnerMenu = async session => {
+          ownerLink.hidden = true;
+          if (!session?.user) return;
+          const { data, error } = await supabase.rpc("is_studio_admin");
+          ownerLink.hidden = Boolean(error) || data !== true;
+        };
+        const { data: { session } } = await supabase.auth.getSession();
+        await updateOwnerMenu(session);
+        supabase.auth.onAuthStateChange((_event, sessionNow) => {
+          queueMicrotask(() => updateOwnerMenu(sessionNow));
+        });
+      }).catch(error => console.warn("Owner menu could not start.", error));
     }, 800);
   }, { once: true });
-</script>
-<script type="module">
-import { SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, getSupabaseClient } from "./supabase-client.js";
-const ownerLink = document.getElementById("ownerAnalyticsMenuLink");
-if (ownerLink && SUPABASE_URL && SUPABASE_PUBLISHABLE_KEY) {
-  const supabase = getSupabaseClient();
-  const updateOwnerMenu = async (session) => {
-    ownerLink.hidden = true;
-    if (!session?.user) return;
-    const { data, error } = await supabase.rpc("is_studio_admin");
-    ownerLink.hidden = Boolean(error) || data !== true;
-  };
-  const { data: { session } } = await supabase.auth.getSession();
-  await updateOwnerMenu(session);
-  supabase.auth.onAuthStateChange((_event, sessionNow) => {
-    queueMicrotask(() => updateOwnerMenu(sessionNow));
-  });
-}
 </script>
 </body>
 </html>
