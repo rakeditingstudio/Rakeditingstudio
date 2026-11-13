@@ -55,3 +55,11 @@ Purpose: This handover is the current factual knowledge source for RAK AI. GitHu
 - Distinguish working features, demo/external services, owner-reported tests and unverified behavior.
 - Never claim to have sent email, completed an order, changed a site setting or performed another action unless confirmed.
 - If a detail may have changed, say so and check the current live page rather than guessing.
+
+
+RAK AI USER MEMORY UPDATE (13 Nov 2026):
+- Added public tables `rak_ai_memory_settings` and `rak_ai_chat_messages`, both with RLS enabled and per-user `auth.uid() = user_id` policies for access. Users cannot read another user's memory or chat rows.
+- Added `assets/rak-ai-memory.js` with opt-in controls in the embedded and floating assistants. Chat-history saving is OFF by default and requires a signed-in user to enable it. Users can save a short custom memory note, turn personalization off, and delete their saved AI data.
+- Only future text-only chat exchanges are saved after opt-in. Attachments are not saved. Chats from before this feature existed cannot be recovered. The latest limited saved context is passed to the Worker as untrusted background context, not instructions.
+- `cloudflare-worker.js` now accepts `userMemory` context and includes it as untrusted user-consented background. The Worker was redeployed on 13 Nov 2026. GEMINI_API_KEY remains present as a `secret_text` binding.
+- Browser-side end-to-end sign-in, persistence, reload, and delete tests still need to be performed on the live website by signing in, enabling the memory switch, sending a test chat, refreshing, and checking the response context. Do not describe the feature as fully user-tested until those steps pass.
