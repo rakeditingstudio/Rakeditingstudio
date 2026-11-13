@@ -1,5 +1,4 @@
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
-import { SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY } from "./supabase-config.js";
+import { SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, getSupabaseClient } from "./supabase-client.js";
 
 const byId = (id) => document.getElementById(id);
 const menu = byId("profileMenu");
@@ -236,9 +235,7 @@ if (!googleButton || !menuToggle || !signOutButton) {
     setStatus("Account setup is incomplete. Please contact the site owner.", true);
   } else {
     try {
-      const supabase = createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, {
-        auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true }
-      });
+      const supabase = getSupabaseClient();
       window.rakSupabase = supabase;
       window.rakGoogleAuthReady = true;
 
